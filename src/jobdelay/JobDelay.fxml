@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="875.0" prefWidth="1207.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jobdelay.JobDelayController">
+   <children>
+      <Pane prefHeight="916.0" prefWidth="1207.0">
+         <children>
+            <Label layoutX="479.0" layoutY="14.0" prefHeight="97.0" prefWidth="306.0" text="Job Delay " textAlignment="CENTER">
+               <font>
+                  <Font size="61.0" />
+               </font>
+            </Label>
+            <Button layoutX="399.0" layoutY="127.0" mnemonicParsing="false" onAction="#loadJob" text="Load Job" />
+            <TextField fx:id="jobField" layoutX="171.0" layoutY="127.0" />
+            <Label layoutX="67.0" layoutY="132.0" text="Job Number" />
+            <ChoiceBox fx:id="jobStatus" disable="true" layoutX="171.0" layoutY="215.0" prefHeight="31.0" prefWidth="186.0" />
+            <Label layoutX="67.0" layoutY="220.0" text="Job Status" />
+            <Button layoutX="399.0" layoutY="215.0" mnemonicParsing="false" onAction="#saveStatus" text="Save Status" />
+         </children>
+      </Pane>
+   </children>
+</VBox>

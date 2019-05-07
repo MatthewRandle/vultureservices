@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<VBox fx:id="mainBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="875.0" prefWidth="1207.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jobcard.JobController">
+   <children>
+      <Pane fx:id="topPane" prefHeight="398.0" prefWidth="1207.0">
+         <children>
+            <Label fx:id="jobLabel" layoutX="35.0" layoutY="46.0" text="Job Number" />
+            <Label layoutX="79.0" layoutY="99.0" text="Client" />
+            <Label layoutX="37.0" layoutY="146.0" text="Arrival Date" />
+            <Label layoutX="39.0" layoutY="191.0" text="Return Date" />
+            <Label layoutX="35.0" layoutY="233.0" text="Quoted Parts" />
+            <TextField fx:id="jobField" layoutX="132.0" layoutY="41.0" prefHeight="31.0" prefWidth="277.0" />
+            <TextField fx:id="clientID" disable="true" layoutX="130.0" layoutY="94.0" prefHeight="31.0" prefWidth="277.0" />
+            <TextArea fx:id="quotedParts" disable="true" layoutX="130.0" layoutY="233.0" prefHeight="87.0" prefWidth="1046.0" />
+            <TextField fx:id="motorID" disable="true" layoutX="899.0" layoutY="41.0" prefHeight="31.0" prefWidth="277.0" />
+            <TextField fx:id="manufacturer" disable="true" layoutX="898.0" layoutY="94.0" prefHeight="31.0" prefWidth="277.0" />
+            <TextField fx:id="manufactureYear" disable="true" layoutX="899.0" layoutY="141.0" prefHeight="31.0" prefWidth="277.0" />
+            <TextField fx:id="labourTime" disable="true" layoutX="899.0" layoutY="186.0" prefHeight="31.0" prefWidth="277.0" />
+            <Label layoutX="842.0" layoutY="46.0" text="Motor" />
+            <Label layoutX="799.0" layoutY="99.0" text="Manufacturer" />
+            <Label layoutX="742.0" layoutY="146.0" text="Est. Manufacture Year" />
+            <Label layoutX="721.0" layoutY="191.0" text="Est. Labour Time (Hours)" />
+            <Label layoutX="94.0" layoutY="338.0" text="Checked By" />
+            <Label layoutX="458.0" layoutY="338.0" text="Checked Date" />
+            <TextField fx:id="checkedBy" disable="true" editable="false" layoutX="188.0" layoutY="333.0" onMouseClicked="#setCheckedBy" />
+            <DatePicker fx:id="checkedDate" disable="true" layoutX="561.0" layoutY="333.0" />
+            <Separator layoutX="64.0" layoutY="372.0" prefHeight="4.0" prefWidth="1079.0" />
+            <DatePicker fx:id="returnDate" disable="true" layoutX="130.0" layoutY="186.0" prefHeight="31.0" prefWidth="277.0" />
+            <DatePicker fx:id="arrivalDate" disable="true" layoutX="130.0" layoutY="141.0" prefHeight="31.0" prefWidth="277.0" />
+            <Button layoutX="670.0" layoutY="41.0" mnemonicParsing="false" onMouseClicked="#save" text="Save" />
+            <Button fx:id="loadButton" layoutX="504.0" layoutY="41.0" mnemonicParsing="false" onMouseClicked="#loadJob" text="Load" />
+            <Button layoutX="588.0" layoutY="41.0" mnemonicParsing="false" onMouseClicked="#newJob" text="New" />
+            <Label layoutX="899.0" layoutY="338.0" text="Job Status" />
+            <ChoiceBox fx:id="jobStatus" disable="true" layoutX="975.0" layoutY="333.0" prefWidth="150.0" />
+            <Label layoutX="415.0" layoutY="39.0" prefHeight="4.0" prefWidth="50.0" text="*" textFill="RED">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="1132.0" layoutY="331.0" prefHeight="4.0" prefWidth="50.0" text="*" textFill="RED">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Button layoutX="530.0" layoutY="186.0" mnemonicParsing="false" onAction="#saveTask" text="Save t Task" />
+         </children>
+      </Pane>
+      <Pane fx:id="bottomPane" prefHeight="524.0" prefWidth="1207.0">
+         <children>
+            <Label layoutX="33.0" layoutY="4.0" text="Task" />
+            <Label layoutX="175.0" layoutY="4.0" text="Notes" />
+            <Label layoutX="928.0" layoutY="4.0" text="Assigned To" />
+            <Label layoutX="1103.0" layoutY="4.0" text="Complete" />
+            <Separator layoutX="64.0" layoutY="429.0" prefHeight="4.0" prefWidth="1079.0" />
+            <Label layoutX="82.0" layoutY="452.0" text="Inspected By" />
+            <Label layoutX="504.0" layoutY="452.0" text="Inspected Date" />
+            <CheckBox fx:id="approved" disable="true" layoutX="1036.0" layoutY="452.0" mnemonicParsing="false" text="Approved" />
+            <TextField fx:id="inspectedBy" disable="true" editable="false" layoutX="175.0" layoutY="447.0" onMouseClicked="#setInspectedBy" />
+            <DatePicker fx:id="inspectedDate" disable="true" layoutX="620.0" layoutY="447.0" />
+            <ScrollPane fx:id="taskScrollPane" layoutX="14.0" layoutY="32.0" prefHeight="390.0" prefWidth="1180.0">
+              <content>
+                <AnchorPane fx:id="taskAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="536.0" prefWidth="1178.0">
+                     <children>
+                        <TextArea fx:id="taskName1" layoutX="14.0" layoutY="14.0" prefHeight="51.0" prefWidth="134.0" />
+                        <TextArea fx:id="taskNotes1" layoutX="155.0" layoutY="14.0" prefHeight="51.0" prefWidth="587.0" />
+                        <TextField fx:id="taskTime1" layoutX="749.0" layoutY="14.0" prefHeight="51.0" prefWidth="143.0" />
+                        <TextField fx:id="taskAssigned1" layoutX="899.0" layoutY="14.0" prefHeight="51.0" prefWidth="159.0" />
+                        <ToggleButton id="complete1" fx:id="taskComplete1" layoutX="1067.0" layoutY="14.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="87.0" stylesheets="@JobCss.css" />
+                        <ToggleButton id="complete1" fx:id="taskComplete2" layoutX="1067.0" layoutY="73.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="87.0" stylesheets="@JobCss.css" />
+                        <TextField fx:id="taskAssigned2" layoutX="899.0" layoutY="73.0" prefHeight="51.0" prefWidth="159.0" />
+                        <TextField fx:id="taskTime2" layoutX="749.0" layoutY="73.0" prefHeight="51.0" prefWidth="143.0" />
+                        <TextArea fx:id="taskNotes2" layoutX="155.0" layoutY="73.0" prefHeight="51.0" prefWidth="587.0" />
+                        <TextArea fx:id="taskName2" layoutX="14.0" layoutY="73.0" prefHeight="51.0" prefWidth="134.0" />
+                        <TextArea fx:id="taskName3" layoutX="14.0" layoutY="131.0" prefHeight="51.0" prefWidth="134.0" />
+                        <TextArea fx:id="taskNotes3" layoutX="155.0" layoutY="131.0" prefHeight="51.0" prefWidth="587.0" />
+                        <TextField fx:id="taskTime3" layoutX="749.0" layoutY="131.0" prefHeight="51.0" prefWidth="143.0" />
+                        <TextField fx:id="taskAssigned3" layoutX="899.0" layoutY="131.0" prefHeight="51.0" prefWidth="159.0" />
+                        <ToggleButton id="complete1" fx:id="taskComplete3" layoutX="1067.0" layoutY="131.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="87.0" stylesheets="@JobCss.css" />
+                        <ToggleButton id="complete1" fx:id="taskComplete4" layoutX="1067.0" layoutY="188.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="87.0" stylesheets="@JobCss.css" />
+                        <TextField fx:id="taskAssigned4" layoutX="899.0" layoutY="188.0" prefHeight="51.0" prefWidth="159.0" />
+                        <TextField fx:id="taskTime4" layoutX="749.0" layoutY="188.0" prefHeight="51.0" prefWidth="143.0" />
+                        <TextArea fx:id="taskNotes4" layoutX="155.0" layoutY="188.0" prefHeight="51.0" prefWidth="587.0" />
+                        <TextArea fx:id="taskName4" layoutX="14.0" layoutY="188.0" prefHeight="51.0" prefWidth="134.0" />
+                        <TextArea fx:id="taskName5" layoutX="14.0" layoutY="246.0" prefHeight="51.0" prefWidth="134.0" />
+                        <TextArea fx:id="taskNotes5" layoutX="155.0" layoutY="246.0" prefHeight="51.0" prefWidth="587.0" />
+                        <TextField fx:id="taskTime5" layoutX="749.0" layoutY="246.0" prefHeight="51.0" prefWidth="143.0" />
+                        <TextField fx:id="taskAssigned5" layoutX="899.0" layoutY="246.0" prefHeight="51.0" prefWidth="159.0" />
+                        <ToggleButton id="complete1" fx:id="taskComplete5" layoutX="1067.0" layoutY="246.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="87.0" stylesheets="@JobCss.css" />
+                        <TextArea fx:id="taskName6" layoutX="14.0" layoutY="304.0" prefHeight="51.0" prefWidth="134.0" />
+                        <TextArea fx:id="taskNotes6" layoutX="155.0" layoutY="304.0" prefHeight="51.0" prefWidth="587.0" />
+                        <TextField fx:id="taskTime6" layoutX="749.0" layoutY="304.0" prefHeight="51.0" prefWidth="143.0" />
+                        <TextField fx:id="taskAssigned6" layoutX="899.0" layoutY="304.0" prefHeight="51.0" prefWidth="159.0" />
+                        <ToggleButton id="complete1" fx:id="taskComplete6" layoutX="1067.0" layoutY="304.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="87.0" stylesheets="@JobCss.css" />
+                        <TextArea fx:id="taskName7" layoutX="14.0" layoutY="364.0" prefHeight="51.0" prefWidth="134.0" />
+                        <TextArea fx:id="taskNotes7" layoutX="155.0" layoutY="364.0" prefHeight="51.0" prefWidth="587.0" />
+                        <TextField fx:id="taskTime7" layoutX="749.0" layoutY="364.0" prefHeight="51.0" prefWidth="143.0" />
+                        <TextField fx:id="taskAssigned7" layoutX="899.0" layoutY="364.0" prefHeight="51.0" prefWidth="159.0" />
+                        <ToggleButton id="complete1" fx:id="taskComplete7" layoutX="1067.0" layoutY="364.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="87.0" stylesheets="@JobCss.css" />
+                        <TextArea fx:id="taskName8" layoutX="14.0" layoutY="421.0" prefHeight="51.0" prefWidth="134.0" />
+                        <TextArea fx:id="taskNotes8" layoutX="155.0" layoutY="421.0" prefHeight="51.0" prefWidth="587.0" />
+                        <TextField fx:id="taskTime8" layoutX="749.0" layoutY="421.0" prefHeight="51.0" prefWidth="143.0" />
+                        <TextField fx:id="taskAssigned8" layoutX="899.0" layoutY="421.0" prefHeight="51.0" prefWidth="159.0" />
+                        <ToggleButton id="complete1" fx:id="taskComplete8" layoutX="1067.0" layoutY="421.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="87.0" stylesheets="@JobCss.css" />
+                        <ToggleButton id="complete1" fx:id="taskComplete9" layoutX="1067.0" layoutY="479.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="87.0" stylesheets="@JobCss.css" />
+                        <TextField fx:id="taskAssigned9" layoutX="899.0" layoutY="479.0" prefHeight="51.0" prefWidth="159.0" />
+                        <TextField fx:id="taskTime9" layoutX="749.0" layoutY="479.0" prefHeight="51.0" prefWidth="143.0" />
+                        <TextArea fx:id="taskNotes9" layoutX="155.0" layoutY="479.0" prefHeight="51.0" prefWidth="587.0" />
+                        <TextArea fx:id="taskName9" layoutX="14.0" layoutY="479.0" prefHeight="51.0" prefWidth="134.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
+            <Label layoutX="762.0" layoutY="4.0" prefHeight="21.0" prefWidth="150.0" text="Time Needed (Hours)" />
+         </children>
+      </Pane>
+   </children>
+</VBox>

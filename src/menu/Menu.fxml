@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="875.0" prefWidth="1207.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="menu.MenuController">
+   <children>
+      <Pane prefHeight="882.0" prefWidth="1207.0">
+         <children>
+            <Button layoutX="565.0" layoutY="121.0" mnemonicParsing="false" onMouseClicked="#setJobScreen" text="Job Card" />
+            <Button layoutX="546.0" layoutY="223.0" mnemonicParsing="false" onMouseClicked="#setTaskScreen" text="Allocate Tasks" />
+            <Text layoutX="516.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Temporary Menu Interface" />
+            <Button layoutX="550.0" layoutY="300.0" mnemonicParsing="false" onMouseClicked="#setUserAccountScreen" text="User Account" />
+            <MenuBar prefHeight="32.0" prefWidth="1207.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="Job">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#setJobScreen" text="New" />
+                        <MenuItem mnemonicParsing="false" onAction="#setLoadJobScreen" text="Load" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" onAction="#setTaskScreen" text="Allocate Tasks" />
+                <Menu mnemonicParsing="false" onAction="#setUserAccountScreen" text="User Account" />
+              </menus>
+            </MenuBar>
+            <Button fx:id="jobDelayButton" layoutX="562.0" layoutY="163.0" mnemonicParsing="false" onMouseClicked="#setJobDelayScreen" text="Job Delay" />
+         </children>
+      </Pane>
+   </children>
+</VBox>

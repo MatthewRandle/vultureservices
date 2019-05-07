@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="login.LoginController">
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+   </rowConstraints>
+   <children>
+      <AnchorPane prefHeight="875.0" prefWidth="1207.0" style="-fx-background-color: #131b28;">
+         <children>
+            <Pane layoutX="303.0" layoutY="152.0" prefHeight="344.0" prefWidth="602.0">
+               <children>
+                  <Text fill="WHITE" layoutX="127.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vulture Services" textAlignment="CENTER">
+                     <font>
+                        <Font name="Zilla Slab" size="49.0" />
+                     </font>
+                  </Text>
+                  <TextField fx:id="username" layoutX="155.0" layoutY="149.0" prefHeight="28.0" prefWidth="292.0" promptText="username" style="-fx-border-color: white; -fx-background-color: #0c1119;" stylesheets="@Login.css">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </TextField>
+                  <PasswordField fx:id="password" layoutX="155.0" layoutY="194.0" prefHeight="3.0" prefWidth="292.0" promptText="password" style="-fx-background-color: #0c1119; -fx-border-color: white;" stylesheets="@Login.css">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </PasswordField>
+                  <Button fx:id="login" layoutX="155.0" layoutY="265.0" mnemonicParsing="false" onMouseClicked="#login" prefHeight="34.0" prefWidth="292.0" stylesheets="@Login.css" text="LOGIN" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Button>
+               </children>
+            </Pane>
+         </children>
+      </AnchorPane>
+   </children>
+</GridPane>

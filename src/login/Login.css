@@ -1,0 +1,16 @@
+.text-field,
+.password-field {
+    -fx-prompt-text-fill: white;
+    -fx-text-fill: white;
+}
+
+.button {
+    -fx-background-color: #60caff;
+    -fx-text-inner-color: white;
+}
+
+.button:hover {
+    -fx-background-color: white;
+    -fx-text-fill:  #131b28;
+    -fx-cursor: hand;
+}

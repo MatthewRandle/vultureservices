@@ -1,0 +1,7 @@
+1. Created change log
+2. Split risk assessment from management to avoidance strategy and mitigaition
+3. Added more to quality manual 
+4. Created new Gantt Chart Version
+
+TO DO:
+all p.management into single pdf. add captions and titles. 

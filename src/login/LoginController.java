@@ -48,7 +48,8 @@ public class LoginController implements Initializable {
 
                 if(userID != null && userID != -1) {
                     Variables.setUserID(userID);
-                    SceneController.activate("menu");
+                    Variables.setUserName(username);
+                    SceneController.activate("userAccount");
                 }
             }
         }

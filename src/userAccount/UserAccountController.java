@@ -1,9 +1,12 @@
 package userAccount;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
 import utils.Variables;
 import utils.Task;
+import utils.SceneController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -19,9 +22,6 @@ public class UserAccountController implements Initializable {
     Connection con;
     PreparedStatement ps;
     @FXML private TableView  <Task> currentTaskTable, overdueTaskTable, suspendedTaskTable;
-    //@FXML private TableColumn<Task, String> taskNameCol, jobNumberCol, descriptionCol, durationCol, urgencyCol;
-    //@FXML private TableColumn<Task, String> taskNameCol_overdue, jobNumberCol_overdue, descriptionCol_overdue, durationCol_overdue, urgencyCol_overdue;
-    //@FXML private TableColumn<Task, String> taskNameCol_suspended, jobNumberCol_suspended, descriptionCol_suspended, durationCol_suspended, urgencyCol_suspended;
     @FXML private TableColumn<Task, String> taskNameCol, descriptionCol;
     @FXML private TableColumn<Task, Integer> jobNumberCol, durationCol, urgencyCol;
 
@@ -59,5 +59,19 @@ public class UserAccountController implements Initializable {
         urgencyCol.setCellValueFactory(new PropertyValueFactory<>("urgency"));
 
         currentTaskTable.setItems(currentTaskList);
+    }
+
+    public void navigate(ActionEvent event) {
+        Button source = (Button) event.getSource();
+
+        if(source.getText().equals("Jobs")) {
+            SceneController.activate("Job");
+        }
+        else if(source.getText().equals("Task Allocation")) {
+            SceneController.activate("taskAllocation");
+        }
+        else if(source.getText().equals("Job Delay")) {
+            SceneController.activate("jobDelay");
+        }
     }
 }

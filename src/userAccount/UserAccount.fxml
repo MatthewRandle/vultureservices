@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="userAccount.UserAccountController">
    <children>
       <HBox fillHeight="false" prefHeight="25.0" prefWidth="1280.0">
          <children>
@@ -24,13 +24,13 @@
          <children>
             <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="52.0" layoutY="104.0" prefHeight="233.0" prefWidth="650.0" style="-fx-border-color: green;">
                <content>
-                  <TableView prefHeight="359.0" prefWidth="481.0">
+                  <TableView fx:id="currentTaskTable" prefHeight="359.0" prefWidth="481.0">
                     <columns>
-                      <TableColumn prefWidth="110.0" text="Task" />
-                      <TableColumn prefWidth="100.0" text="Job Number" />
-                        <TableColumn minWidth="0.0" prefWidth="279.0" text="Description" />
-                        <TableColumn minWidth="0.0" text="Duration" />
-                        <TableColumn minWidth="0.0" text="Urgency" />
+                      <TableColumn fx:id="taskNameCol" prefWidth="110.0" text="Task" />
+                      <TableColumn fx:id="jobNumberCol" prefWidth="100.0" text="Job Number" />
+                        <TableColumn fx:id="descriptionCol" minWidth="0.0" prefWidth="279.0" text="Description" />
+                        <TableColumn fx:id="durationCol" minWidth="0.0" text="Duration" />
+                        <TableColumn fx:id="urgencyCol" minWidth="0.0" text="Urgency" />
                     </columns>
                   </TableView>
                </content>
@@ -39,30 +39,30 @@
             <Label layoutX="52.0" layoutY="360.0" text="Overdue Tasks" />
             <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="723.0" layoutY="383.0" prefHeight="233.0" prefWidth="505.0" style="-fx-border-color: orange;">
                <content>
-                  <TableView prefHeight="359.0" prefWidth="481.0">
+                  <TableView fx:id="suspendedTaskTable" prefHeight="359.0" prefWidth="481.0">
                      <columns>
-                        <TableColumn prefWidth="98.0" text="Task" />
-                        <TableColumn prefWidth="127.0" text="Job Number" />
-                        <TableColumn minWidth="0.0" prefWidth="277.0" text="Description" />
-                     </columns>
-                  </TableView>
-               </content>
-            </ScrollPane>
-            <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="52.0" layoutY="383.0" prefHeight="233.0" prefWidth="650.0" style="-fx-border-color: red;">
-               <content>
-                  <TableView prefHeight="359.0" prefWidth="481.0">
-                     <columns>
-                        <TableColumn prefWidth="110.0" text="Task" />
-                        <TableColumn prefWidth="100.0" text="Job Number" />
-                        <TableColumn minWidth="0.0" prefWidth="279.0" text="Description" />
-                        <TableColumn minWidth="0.0" text="Duration" />
-                        <TableColumn minWidth="0.0" text="Urgency" />
+                        <TableColumn fx:id="taskNameCol_suspended" prefWidth="98.0" text="Task" />
+                        <TableColumn fx:id="jobNumberCol_suspended" prefWidth="127.0" text="Job Number" />
+                        <TableColumn fx:id="descriptionCol_suspended" minWidth="0.0" prefWidth="277.0" text="Description" />
                      </columns>
                   </TableView>
                </content>
             </ScrollPane>
             <Label layoutX="723.0" layoutY="360.0" text="Suspended Tasks" />
             <Group />
+            <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="52.0" layoutY="383.0" prefHeight="233.0" prefWidth="650.0" style="-fx-border-color: green;">
+               <content>
+                  <TableView fx:id="overdueTaskTable" prefHeight="359.0" prefWidth="481.0">
+                     <columns>
+                        <TableColumn fx:id="taskNameCol_overdue" prefWidth="110.0" text="Task" />
+                        <TableColumn fx:id="jobNumberCol_overdue" prefWidth="100.0" text="Job Number" />
+                        <TableColumn fx:id="descriptionCol_overdue" minWidth="0.0" prefWidth="279.0" text="Description" />
+                        <TableColumn fx:id="durationCol_overdue" minWidth="0.0" text="Duration" />
+                        <TableColumn fx:id="urgencyCol_overdue" minWidth="0.0" text="Urgency" />
+                     </columns>
+                  </TableView>
+               </content>
+            </ScrollPane>
          </children>
       </Pane>
    </children>

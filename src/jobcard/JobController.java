@@ -45,11 +45,10 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 /**
- * 
+ * JobController controls the Job Card interface, providing database connection and formats for the interface.
  * @author Ryan Pickering - 17013352
  * @version 1
  * @date 08/05/2019
- *
  */
 
 public class JobController implements Initializable {
@@ -86,7 +85,9 @@ public class JobController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		//Enables the bottom pane when the program starts.
+		connection = Variables.getConnection();
+		
+		//Disables the bottom pane when the program starts.
 		this.bottomPane.setDisable(true);
 		// Initialises the Job Status choice box.
 		jobStatus.getItems().addAll("Active", "Suspended");
@@ -139,7 +140,22 @@ public class JobController implements Initializable {
 		this.inspectedDate.setValue(null);
 		this.approved.setDisable(false);
 		this.approved.setSelected(false);
-
+		
+		for (TextArea textarea : taskNameList) {
+			textarea.clear();
+		}
+		for (TextArea textarea : taskNotesList) {
+			textarea.clear();
+		}
+		for (TextField textfield : taskTimeList) {
+			textfield.clear();
+		}
+		for (TextField textfield : taskAssignedList) {
+			textfield.clear();
+		}
+		for (ToggleButton togglebutton : taskCompletedList) {
+			togglebutton.setSelected(false);
+		}
 	}
 
 	/**
@@ -183,8 +199,6 @@ public class JobController implements Initializable {
 			inspectedDate = this.inspectedDate.getValue();
 			approved = this.approved.isSelected();
 
-			// Creates a connection to the database
-			connection = Variables.getConnection();
 			// Creates prepared statement
 			ps = Variables.getPreparedStatement();
 
@@ -258,31 +272,42 @@ public class JobController implements Initializable {
 			int taskTime = theTask.getDuration();
 			String taskAssigned = theTask.getAssignedTo();
 			boolean complete = theTask.isComplete();
+			String query = null;
 
 			try {
-				// Creates a connection to the database
-				connection = Variables.getConnection();
 				// Creates prepared statement
 				ps = Variables.getPreparedStatement();
-
-				// if job number does not exist then save new, else update current record
-				String query = "INSERT INTO tasks (task_name, job_number, completed, description, duration, urgency, suspended, username) "
-						+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-				// + "ON DUPLICATE KEY UPDATE client=?, arrival_date=?, return_date=?,
-				// quoted_parts=?, motor_serial=?, manufacturer=?, manufacture_year=?,
-				// labour_time=?,"
-				// + "checked_by=?, checked_date=?, inspected_by=?, inspected_date=?, status=?,
-				// approved=?";
-				ps = connection.prepareStatement(query);
-				ps.setString(1, taskName);
-				ps.setInt(2, jobNumber);
-				ps.setBoolean(3, complete);
-				ps.setString(4, taskNotes);
-				ps.setInt(5, taskTime);
-				ps.setInt(6, 6);
-				ps.setBoolean(7, false);
-				ps.setString(8, taskAssigned); // change to user
-				ps.executeUpdate();
+				
+				//If the row with the same task name and job number exists, then update
+				if (checkRow(jobNumber, taskName)) {
+					query = "UPDATE tasks SET completed=?, description=?, duration=?, urgency=?, suspended=?, username=? \r\n" + 
+							"WHERE task_name=? AND job_number=?";
+					ps = connection.prepareStatement(query);
+					ps.setBoolean(1, complete);
+					ps.setString(2, taskNotes);
+					ps.setInt(3, taskTime);
+					ps.setInt(4, 6); //change to urgency
+					ps.setBoolean(5, false); //change to suspended
+					ps.setString(6, taskAssigned); // change to user
+					ps.setString(7, taskName);
+					ps.setInt(8, jobNumber);
+					ps.executeUpdate();
+				}
+				//Otherwise insert a new row.
+				else {
+					query = "INSERT INTO tasks (task_name, job_number, completed, description, duration, urgency, suspended, username) "
+							+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+					ps = connection.prepareStatement(query);
+					ps.setString(1, taskName);
+					ps.setInt(2, jobNumber);
+					ps.setBoolean(3, complete);
+					ps.setString(4, taskNotes);
+					ps.setInt(5, taskTime);
+					ps.setInt(6, 6); //change to urgency
+					ps.setBoolean(7, false); //change to supsnedned
+					ps.setString(8, taskAssigned); 
+					ps.executeUpdate();
+				}
 				sqlConfirmation("Job Updated Successfully");
 			} catch (SQLException error) {
 				sqlConfirmation("The Data Was Not Inserted Successfully");
@@ -304,8 +329,6 @@ public class JobController implements Initializable {
 		String jobField1 = this.jobField.getText();
 		int jobNumber = Integer.parseInt(jobField1);
 		try {
-
-			connection = Variables.getConnection();
 			ps = Variables.getPreparedStatement();
 
 			String query = "SELECT * FROM jobs WHERE jobs.job_number = ?";
@@ -403,7 +426,6 @@ public class JobController implements Initializable {
 
 	public void loadTask(int jobNumber) {
 		try {
-			connection = Variables.getConnection();
 			ps = Variables.getPreparedStatement();
 
 			String query = "SELECT * FROM tasks WHERE tasks.job_number = ?";
@@ -477,6 +499,29 @@ public class JobController implements Initializable {
 			else
 				return c;
 		}));
+	}
+	
+	public boolean checkRow(int jobNumber, String taskName) {
+		boolean exists = false;
+		try {
+			ps = Variables.getPreparedStatement();
+
+			String query = "SELECT * FROM tasks WHERE job_number=? and task_name=?;";
+			ps = connection.prepareStatement(query);
+			ps.setInt(1, jobNumber);
+			ps.setString(2, taskName);
+
+			ResultSet results = ps.executeQuery();
+			if (!results.isBeforeFirst()) {
+				exists = false;
+			} else {
+				exists = true;
+			}
+		} catch (SQLException error) {
+			System.out.println("Error getting Job");
+			System.out.println(error);
+		}
+		return exists;
 	}
 
 	public void setInspectedBy() {

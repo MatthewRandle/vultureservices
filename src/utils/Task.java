@@ -39,18 +39,18 @@ public class Task {
         this.complete = complete;
     }
 
-    public String getTask_name() {
+    public String getTaskName() {
         return taskName;
     }
-    public void setTask_name(String task_name) {
-        this.taskName = task_name;
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
     }
 
-    public int getJob_number() {
+    public int getJobNumber() {
         return jobNumber;
     }
-    public void setJob_number(int job_number) {
-        this.jobNumber = job_number;
+    public void setJobNumber(int jobNumber) {
+        this.jobNumber = jobNumber;
     }
 
     public String getDescription() {

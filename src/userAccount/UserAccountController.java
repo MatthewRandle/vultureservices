@@ -19,11 +19,13 @@ public class UserAccountController implements Initializable {
     Connection con;
     PreparedStatement ps;
     @FXML private TableView  <Task> currentTaskTable, overdueTaskTable, suspendedTaskTable;
-    @FXML private TableColumn<Task, String> taskNameCol, jobNumberCol, descriptionCol, durationCol, urgencyCol;
-    @FXML private TableColumn<Task, String> taskNameCol_overdue, jobNumberCol_overdue, descriptionCol_overdue, durationCol_overdue, urgencyCol_overdue;
-    @FXML private TableColumn<Task, String> taskNameCol_suspended, jobNumberCol_suspended, descriptionCol_suspended, durationCol_suspended, urgencyCol_suspended;
+    //@FXML private TableColumn<Task, String> taskNameCol, jobNumberCol, descriptionCol, durationCol, urgencyCol;
+    //@FXML private TableColumn<Task, String> taskNameCol_overdue, jobNumberCol_overdue, descriptionCol_overdue, durationCol_overdue, urgencyCol_overdue;
+    //@FXML private TableColumn<Task, String> taskNameCol_suspended, jobNumberCol_suspended, descriptionCol_suspended, durationCol_suspended, urgencyCol_suspended;
+    @FXML private TableColumn<Task, String> taskNameCol, descriptionCol;
+    @FXML private TableColumn<Task, Integer> jobNumberCol, durationCol, urgencyCol;
 
-    ObservableList<Task> taskList = FXCollections.observableArrayList();
+    ObservableList<Task> currentTaskList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -34,7 +36,8 @@ public class UserAccountController implements Initializable {
             ResultSet results = con.createStatement().executeQuery("select * from tasks");
 
             while (results.next()) {
-                taskList.add(
+                System.out.println(results.getInt("job_number"));
+                currentTaskList.add(
                         new Task(
                                 results.getString("task_name"),
                                 results.getInt("job_number"),
@@ -49,12 +52,12 @@ public class UserAccountController implements Initializable {
             e.printStackTrace();
         }
 
-        taskNameCol.setCellValueFactory(new PropertyValueFactory<Task, String>("task_name"));
-        jobNumberCol.setCellValueFactory(new PropertyValueFactory<Task, String>("job_Number"));
-        durationCol.setCellValueFactory(new PropertyValueFactory<Task, String>("duration"));
-        descriptionCol.setCellValueFactory(new PropertyValueFactory<Task, String>("description"));
-        urgencyCol.setCellValueFactory(new PropertyValueFactory<Task, String>("urgency"));
+        taskNameCol.setCellValueFactory(new PropertyValueFactory<>("taskName"));
+        jobNumberCol.setCellValueFactory(new PropertyValueFactory<>("jobNumber"));
+        durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        urgencyCol.setCellValueFactory(new PropertyValueFactory<>("urgency"));
 
-        currentTaskTable.setItems(taskList);
+        currentTaskTable.setItems(currentTaskList);
     }
 }

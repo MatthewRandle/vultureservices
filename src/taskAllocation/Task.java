@@ -2,176 +2,106 @@ package taskAllocation;
 
 public class Task {
 
-	private String task_name;
-	private int job_number;
-	private String description;
-	private int duration;
-	private int Urgency;
-	private int Suspended;
-	private String Username;
-	private boolean complete;
-	private String assignedTo;
+	private String taskName;
+	private int jobNumber;
 	private String taskNotes;
+	private int taskDuration;
+	private boolean taskComplete;
+	private int taskUrgency;
+	private boolean taskSuspended;
+	private String assignedTo;
 	
-	public Task(String taskName, String taskNotes, int job_number, boolean complete, int duration, int urgency, String assignedTo) {
-		this.task_name = taskName;
+	public Task(String taskName, int jobNumber, String taskNotes, int taskDuration, boolean taskComplete,
+			int taskUrgency, boolean taskSuspended, String assignedTo) {
+		this.taskName = taskName;
+		this.jobNumber = jobNumber;
 		this.taskNotes = taskNotes;
-		this.job_number = job_number;
-		this.duration = duration;
+		this.taskDuration = taskDuration;
+		this.taskComplete = taskComplete;
+		this.taskUrgency = taskUrgency;
+		this.taskSuspended = taskSuspended;
 		this.assignedTo = assignedTo;
-		this.Urgency = urgency;
-		this.complete = complete;
+		
 	}
 
-
-	
-	public Task(String taskName, String taskNotes, int timeNeeded, String assignedTo, boolean complete) {
-		this.task_name = taskName;
+	public Task(String taskName, int jobNumber, String taskNotes, int taskDuration, boolean taskComplete,
+			String assignedTo) {
+		super();
+		this.taskName = taskName;
+		this.jobNumber = jobNumber;
 		this.taskNotes = taskNotes;
-		this.duration = timeNeeded;
-		this.assignedTo = assignedTo;
-		this.complete = complete;
-	}
-
-	public String getTask_name() {
-		return task_name;
-	}
-
-
-
-
-	public void setTask_name(String task_name) {
-		this.task_name = task_name;
-	}
-
-
-
-
-	public int getJob_number() {
-		return job_number;
-	}
-
-
-
-
-	public void setJob_number(int job_number) {
-		this.job_number = job_number;
-	}
-
-
-
-
-	public String getDescription() {
-		return description;
-	}
-
-
-
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-
-
-
-	public int getDuration() {
-		return duration;
-	}
-
-
-
-
-	public void setDuration(int duration) {
-		this.duration = duration;
-	}
-
-
-
-
-	public int getUrgency() {
-		return Urgency;
-	}
-
-
-
-
-	public void setUrgency(int urgency) {
-		Urgency = urgency;
-	}
-
-
-
-
-	public int getSuspended() {
-		return Suspended;
-	}
-
-
-
-
-	public void setSuspended(int suspended) {
-		Suspended = suspended;
-	}
-
-
-
-
-	public String getUsername() {
-		return Username;
-	}
-
-
-
-
-	public void setUsername(String username) {
-		Username = username;
-	}
-
-
-
-
-	public boolean isComplete() {
-		return complete;
-	}
-
-
-
-
-	public void setComplete(boolean complete) {
-		this.complete = complete;
-	}
-
-
-
-
-	public String getAssignedTo() {
-		return assignedTo;
-	}
-
-
-
-
-	public void setAssignedTo(String assignedTo) {
+		this.taskDuration = taskDuration;
+		this.taskComplete = taskComplete;
 		this.assignedTo = assignedTo;
 	}
 
 
 
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
+	public int getJobNumber() {
+		return jobNumber;
+	}
+
+	public void setJobNumber(int jobNumber) {
+		this.jobNumber = jobNumber;
+	}
 
 	public String getTaskNotes() {
 		return taskNotes;
 	}
 
-
-
-
 	public void setTaskNotes(String taskNotes) {
 		this.taskNotes = taskNotes;
 	}
+
+	public int getTaskDuration() {
+		return taskDuration;
+	}
+
+	public void setTaskDuration(int taskDuration) {
+		this.taskDuration = taskDuration;
+	}
+
+	public boolean isTaskComplete() {
+		return taskComplete;
+	}
+
+	public void setTaskComplete(boolean taskComplete) {
+		this.taskComplete = taskComplete;
+	}
+
+	public int getTaskUrgency() {
+		return taskUrgency;
+	}
+
+	public void setTaskUrgency(int taskUrgency) {
+		this.taskUrgency = taskUrgency;
+	}
+
+	public boolean isTaskSuspended() {
+		return taskSuspended;
+	}
+
+	public void setTaskSuspended(boolean taskSuspended) {
+		this.taskSuspended = taskSuspended;
+	}
+
+	public String getAssignedTo() {
+		return assignedTo;
+	}
+
+	public void setAssignedTo(String assignedTo) {
+		this.assignedTo = assignedTo;
+	}
+	
 	
 	
 
-
-	
 }

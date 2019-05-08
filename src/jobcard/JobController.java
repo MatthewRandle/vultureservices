@@ -267,11 +267,11 @@ public class JobController implements Initializable {
 		createTask(taskName9, jobNumber, taskNotes9, taskTime9, taskAssigned9, taskComplete9);
 		
 		for (Task theTask : taskArrayList) {
-			String taskName = theTask.getTask_name();
+			String taskName = theTask.getTaskName();
 			String taskNotes = theTask.getTaskNotes();
-			int taskTime = theTask.getDuration();
+			int taskTime = theTask.getTaskDuration();
 			String taskAssigned = theTask.getAssignedTo();
-			boolean complete = theTask.isComplete();
+			boolean complete = theTask.isTaskComplete();
 			String query = null;
 
 			try {
@@ -450,7 +450,7 @@ public class JobController implements Initializable {
 					username = results.getString("username");
 					duration = results.getInt("duration");
 					urgency = results.getInt("urgency");
-					loadedTaskList.add(new Task(taskName, taskNotes, jobNumber, completed, duration, urgency, username));
+					loadedTaskList.add(new Task(taskName, jobNumber, taskNotes, duration, completed, urgency, suspended, username)); 
 				}
 			}
 		} catch (SQLException error) {
@@ -465,11 +465,11 @@ public class JobController implements Initializable {
 		 * 
 		 */
 		for (Task task : loadedTaskList) {
-			taskName1.setText(task.getTask_name());
+			taskName1.setText(task.getTaskName());
 			taskNotes1.setText(task.getTaskNotes());
-			taskTime1.setText(""+task.getDuration());
-			taskAssigned1.setText(task.getUsername());
-			taskComplete1.setSelected(task.isComplete());
+			taskTime1.setText(""+task.getTaskDuration());
+			taskAssigned1.setText(task.getAssignedTo());
+			taskComplete1.setSelected(task.isTaskComplete());
 		}
 	}
 	
@@ -478,8 +478,7 @@ public class JobController implements Initializable {
 		if (!taskName.getText().isEmpty()) {
 			String taskTimeString = taskTime.getText();
 			int taskLength = Integer.parseInt(taskTimeString);
-			taskArrayList.add(new Task(taskName.getText(), taskNotes.getText(), taskLength, taskAssigned.getText(),
-					taskComplete.isSelected()));
+			taskArrayList.add(new Task(taskName.getText(), jobNumber, taskNotes.getText(), taskLength, taskComplete.isSelected(), 10, false, taskAssigned.getText()));	
 		}
 	}
 	

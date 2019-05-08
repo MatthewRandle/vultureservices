@@ -27,6 +27,7 @@
               </menus>
             </MenuBar>
             <Button fx:id="jobDelayButton" layoutX="562.0" layoutY="163.0" mnemonicParsing="false" onMouseClicked="#setJobDelayScreen" text="Job Delay" />
+            <Button layoutX="572.0" layoutY="362.0" mnemonicParsing="false" onMouseClicked="#setStatisticsScreen" text="Statistics" />
          </children>
       </Pane>
    </children>

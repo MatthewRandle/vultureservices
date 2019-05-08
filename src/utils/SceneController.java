@@ -37,6 +37,7 @@ public final class SceneController extends Application {
         SceneController.addScreen("taskAllocation", FXMLLoader.load(getClass().getResource( "/taskAllocation/TaskAllocation.fxml" )));
         SceneController.addScreen("menu", FXMLLoader.load(getClass().getResource( "/menu/Menu.fxml" )));
         SceneController.addScreen("jobDelay", FXMLLoader.load(getClass().getResource( "/jobdelay/JobDelay.fxml" )));
+        SceneController.addScreen("statistics", FXMLLoader.load(getClass().getResource( "/statistics/Statistics.fxml" )));
     }
 
     @Override

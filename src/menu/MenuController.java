@@ -30,4 +30,7 @@ public class MenuController implements Initializable {
 	    public void setJobDelayScreen() {
 	    	SceneController.activate("jobDelay");
 	    }
+	    public void setStatisticsScreen() {
+	    	SceneController.activate("statistics");
+	    }
 }

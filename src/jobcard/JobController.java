@@ -1,6 +1,7 @@
 package jobcard;
 
 import utils.Variables;
+
 import utils.SceneController;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -43,6 +44,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
+/**
+ * 
+ * @author Ryan Pickering - 17013352
+ * @version 1
+ * @date 08/05/2019
+ *
+ */
+
 public class JobController implements Initializable {
 
 	Connection connection;
@@ -57,32 +66,35 @@ public class JobController implements Initializable {
 	public boolean task1Complete, task2Complete, task3Complete, task4Complete, task5Complete, task6Complete,
 			task7Complete, task8Complete;
 	public Tooltip jobNoToolTip;
-
+	
 	/* Task Variables */
-	public ArrayList<TextField> taskTimeList;
-	public ArrayList<TextField> taskAssignedList;
-	public ArrayList<TextArea> taskNotesList;
-	public ArrayList<TextArea> taskNameList;
-	public ArrayList<Task> taskArrayList;
+	public ArrayList<TextField> taskTimeList, taskAssignedList;
+	public ArrayList<TextArea> taskNotesList, taskNameList;
+	public ArrayList<Task> taskArrayList, loadedTaskList;
 	public ArrayList<ToggleButton> taskCompletedList;
-	public ArrayList<Task> loadedTaskList;
-
 	public TextArea taskName1, taskName2, taskName3, taskName4, taskName5, taskName6, taskName7, taskName8, taskName9;
-	public TextArea taskNotes1, taskNotes2, taskNotes3, taskNotes4, taskNotes5, taskNotes6, taskNotes7, taskNotes8,
-			taskNotes9;
+	public TextArea taskNotes1, taskNotes2, taskNotes3, taskNotes4, taskNotes5, taskNotes6, taskNotes7, taskNotes8, taskNotes9;
 	public TextField taskTime1, taskTime2, taskTime3, taskTime4, taskTime5, taskTime6, taskTime7, taskTime8, taskTime9;
-	public TextField taskAssigned1, taskAssigned2, taskAssigned3, taskAssigned4, taskAssigned5, taskAssigned6,
-			taskAssigned7, taskAssigned8, taskAssigned9;
-	public ToggleButton taskComplete1, taskComplete2, taskComplete3, taskComplete4, taskComplete5, taskComplete6,
-			taskComplete7, taskComplete8, taskComplete9;
+	public TextField taskAssigned1, taskAssigned2, taskAssigned3, taskAssigned4, taskAssigned5, taskAssigned6, taskAssigned7, taskAssigned8, taskAssigned9;
+	public ToggleButton taskComplete1, taskComplete2, taskComplete3, taskComplete4, taskComplete5, taskComplete6, taskComplete7, taskComplete8, taskComplete9;
 	public Pane topPane, bottomPane;
 	
+	/**
+	 * Calls methods as soon as the scene has been loaded
+	 * @param location
+	 * @param resources 
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		//Enables the bottom pane when the program starts.
 		this.bottomPane.setDisable(true);
+		// Initialises the Job Status choice box.
 		jobStatus.getItems().addAll("Active", "Suspended");
+		//Calls the generate tool tips method to initialise the tooltips
 		generateToolTips();
+		//Initialises the arraylists
 		initialiseArrayLists();
+		//Prevents strings being entered into the number text fields
 		formatTextField(manufactureYear);
 		formatTextField(labourTime);
 		for (TextField textfield : taskTimeList) {

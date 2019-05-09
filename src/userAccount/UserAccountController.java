@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
 import utils.Variables;
 import utils.Task;
 import utils.SceneController;
@@ -21,6 +22,7 @@ import java.util.ResourceBundle;
 public class UserAccountController implements Initializable {
     Connection con;
     PreparedStatement ps;
+    @FXML private Pane techGroup;
     @FXML private TableView  <Task> currentTaskTable, overdueTaskTable, suspendedTaskTable;
     @FXML private TableColumn<Task, String> taskNameCol, descriptionCol;
     @FXML private TableColumn<Task, Integer> jobNumberCol, durationCol, urgencyCol;
@@ -36,7 +38,6 @@ public class UserAccountController implements Initializable {
             ResultSet results = con.createStatement().executeQuery("select * from tasks");
 
             while (results.next()) {
-                System.out.println(results.getInt("job_number"));
                 currentTaskList.add(
                         new Task(
                                 results.getString("task_name"),
@@ -59,6 +60,8 @@ public class UserAccountController implements Initializable {
         urgencyCol.setCellValueFactory(new PropertyValueFactory<>("urgency"));
 
         currentTaskTable.setItems(currentTaskList);
+
+        checkUserType();
     }
 
     public void navigate(ActionEvent event) {
@@ -72,6 +75,13 @@ public class UserAccountController implements Initializable {
         }
         else if(source.getText().equals("Job Delay")) {
             SceneController.activate("jobDelay");
+        }
+    }
+
+    public void checkUserType() {
+        if(Variables.getUserType().equals("Technician")) {
+            techGroup.setDisable(false);
+            techGroup.setVisible(true);
         }
     }
 }

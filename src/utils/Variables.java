@@ -10,24 +10,26 @@ public final class Variables {
     public static Connection connection;
     public static PreparedStatement ps;
     private static String username;
+    private static String userType;
 
     public static Integer getUserID() {
         return userID;
     }
-
-    public static void setUserName(String username) { Variables.username = username; }
-    public static String getUserName() {
-    	return username;
-    }
-
     public static void setUserID(Integer userID) {
         Variables.userID = userID;
+    }
+
+    public static void setUserName(String username) { Variables.username = username; }
+    public static String getUserName() { return username; }
+
+    public static void setUserType(String userType) { Variables.userType = userType; }
+    public static String getUserType() {
+        return userType;
     }
 
     public static Connection getConnection() {
         return connection;
     }
-
     public static void setConnection(Connection connection) {
         Variables.connection = connection;
     }
@@ -35,7 +37,6 @@ public final class Variables {
     public static PreparedStatement getPreparedStatement() {
         return ps;
     }
-
     public static void setPreparedStatement(PreparedStatement ps) {
         Variables.ps = ps;
     }

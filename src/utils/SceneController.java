@@ -1,14 +1,14 @@
 package utils;
-import utils.Variables;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
 import java.sql.SQLException;
 import java.util.HashMap;
+
+import userAccount.UserAccountController;
 
 public final class SceneController extends Application {
     private static HashMap<String, Pane> screenMap = new HashMap<>();
@@ -32,11 +32,20 @@ public final class SceneController extends Application {
         primaryStage.show();
 
         //Register all available scenes here
-        SceneController.addScreen("userAccount", FXMLLoader.load(getClass().getResource( "/userAccount/UserAccount.fxml" )));
-        SceneController.addScreen("Job", FXMLLoader.load(getClass().getResource( "/jobcard/Job.fxml" )));
-        SceneController.addScreen("taskAllocation", FXMLLoader.load(getClass().getResource( "/taskAllocation/TaskAllocation.fxml" )));
-        SceneController.addScreen("jobDelay", FXMLLoader.load(getClass().getResource( "/jobdelay/JobDelay.fxml" )));
-        SceneController.addScreen("statistics", FXMLLoader.load(getClass().getResource( "/statistics/Statistics.fxml" )));
+        //SceneController.addScreen("userAccount", FXMLLoader.load(getClass().getResource( "/userAccount/UserAccount.fxml" )));
+        //SceneController.addScreen("Job", FXMLLoader.load(getClass().getResource( "/jobcard/Job.fxml" )));
+        //SceneController.addScreen("taskAllocation", FXMLLoader.load(getClass().getResource( "/taskAllocation/TaskAllocation.fxml" )));
+        //SceneController.addScreen("jobDelay", FXMLLoader.load(getClass().getResource( "/jobdelay/JobDelay.fxml" )));
+        //SceneController.addScreen("statistics", FXMLLoader.load(getClass().getResource( "/statistics/Statistics.fxml" )));
+    }
+
+    public void registerScreens() throws Exception {
+        //Register all available scenes here
+        addScreen("userAccount", FXMLLoader.load(getClass().getResource( "/userAccount/UserAccount.fxml" )));
+        addScreen("Job", FXMLLoader.load(getClass().getResource( "/jobcard/Job.fxml" )));
+        addScreen("taskAllocation", FXMLLoader.load(getClass().getResource( "/taskAllocation/TaskAllocation.fxml" )));
+        addScreen("jobDelay", FXMLLoader.load(getClass().getResource( "/jobdelay/JobDelay.fxml" )));
+        addScreen("statistics", FXMLLoader.load(getClass().getResource( "/statistics/Statistics.fxml" )));
     }
 
     @Override
@@ -63,7 +72,11 @@ public final class SceneController extends Application {
         screenMap.remove(name);
     }
 
-    public static void activate(String name){
+    public static void activate(String name) {
         mainScene.setRoot( screenMap.get(name) );
+
+        if(name.equals("userAccount")) {
+            //UserAccountController.checkUserType();
+        }
     }
 }

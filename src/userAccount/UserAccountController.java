@@ -3,6 +3,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import utils.Variables;
@@ -22,6 +23,7 @@ import java.util.ResourceBundle;
 public class UserAccountController implements Initializable {
     Connection con;
     PreparedStatement ps;
+    @FXML Label username;
     @FXML private Pane techGroup;
     @FXML private TableView  <Task> currentTaskTable, overdueTaskTable, suspendedTaskTable;
     @FXML private TableColumn<Task, String> taskNameCol, descriptionCol;
@@ -62,6 +64,7 @@ public class UserAccountController implements Initializable {
         currentTaskTable.setItems(currentTaskList);
 
         checkUserType();
+        username.setText(Variables.getUserName());
     }
 
     public void navigate(ActionEvent event) {

@@ -779,6 +779,9 @@ public class JobController implements Initializable {
         } catch (FileNotFoundException e) {
 			confirmation("The File Was Not Found");
 			e.printStackTrace();
+    	} catch (Exception e) {
+			confirmation("The file was not exported");
+			e.printStackTrace();
 		}
         //Confirm that the job card has been exported.
         confirmation("The Job Card Has Been Exported.");

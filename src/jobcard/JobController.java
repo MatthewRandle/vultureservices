@@ -42,6 +42,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 /**
@@ -64,19 +65,22 @@ public class JobController implements Initializable {
 	public CheckBox approved;
 	public boolean task1Complete, task2Complete, task3Complete, task4Complete, task5Complete, task6Complete,
 			task7Complete, task8Complete;
-	public Tooltip jobNoToolTip;
 	
 	/* Task Variables */
-	public ArrayList<TextField> taskTimeList, taskAssignedList;
-	public ArrayList<TextArea> taskNotesList, taskNameList;
+	public TextField[] taskTimeList, taskAssignedList;
+	public TextArea[] taskNotesList;
+	public TextArea[] taskNameList;
+	public CheckBox[] checkBoxList;
 	public ArrayList<Task> taskArrayList, loadedTaskList;
-	public ArrayList<ToggleButton> taskCompletedList;
+	public ToggleButton[] taskCompletedList;
 	public TextArea taskName1, taskName2, taskName3, taskName4, taskName5, taskName6, taskName7, taskName8, taskName9;
 	public TextArea taskNotes1, taskNotes2, taskNotes3, taskNotes4, taskNotes5, taskNotes6, taskNotes7, taskNotes8, taskNotes9;
 	public TextField taskTime1, taskTime2, taskTime3, taskTime4, taskTime5, taskTime6, taskTime7, taskTime8, taskTime9;
 	public TextField taskAssigned1, taskAssigned2, taskAssigned3, taskAssigned4, taskAssigned5, taskAssigned6, taskAssigned7, taskAssigned8, taskAssigned9;
+	public CheckBox suspended1, suspended2, suspended3, suspended4, suspended5, suspended6, suspended7, suspended8, suspended9;
 	public ToggleButton taskComplete1, taskComplete2, taskComplete3, taskComplete4, taskComplete5, taskComplete6, taskComplete7, taskComplete8, taskComplete9;
 	public Pane topPane, bottomPane;
+	public int index;
 	
 	/**
 	 * Calls methods as soon as the scene has been loaded
@@ -91,10 +95,8 @@ public class JobController implements Initializable {
 		this.bottomPane.setDisable(true);
 		// Initialises the Job Status choice box.
 		jobStatus.getItems().addAll("Active", "Suspended");
-		//Calls the generate tool tips method to initialise the tooltips
-		generateToolTips();
 		//Initialises the arraylists
-		initialiseArrayLists();
+		initialiseArrays();
 		//Prevents strings being entered into the number text fields
 		formatTextField(manufactureYear);
 		formatTextField(labourTime);
@@ -112,7 +114,7 @@ public class JobController implements Initializable {
 		// enables and clears all of the fields on the interface.
 		this.bottomPane.setDisable(false);
 		this.clientID.setDisable(false);
-		this.jobField.clear();
+		//this.jobField.clear();
 		this.clientID.clear();
 		this.arrivalDate.setDisable(false);
 		this.arrivalDate.setValue(null);
@@ -161,6 +163,7 @@ public class JobController implements Initializable {
 	/**
 	 * Saves the values on the job card into a new job, or overwrites the existing
 	 * job.
+	 * @param ActionEvent ae - the actionevent passed from the GUI
 	 */
 	public void save(ActionEvent ae) {
 		try {
@@ -251,26 +254,33 @@ public class JobController implements Initializable {
 		}
 	}
 	
+	/**
+	 * Saves the task section of the interface
+	 */
 	public void saveTask() {
 
+		//Gets the job number from the text field.
 		String jobField = this.jobField.getText();
 		int jobNumber = Integer.parseInt(jobField);
 		
-		createTask(taskName1, jobNumber, taskNotes1, taskTime1, taskAssigned1, taskComplete1);
-		createTask(taskName2, jobNumber, taskNotes2, taskTime2, taskAssigned2, taskComplete2);
-		createTask(taskName3, jobNumber, taskNotes3, taskTime3, taskAssigned3, taskComplete3);
-		createTask(taskName4, jobNumber, taskNotes4, taskTime4, taskAssigned4, taskComplete4);
-		createTask(taskName5, jobNumber, taskNotes5, taskTime5, taskAssigned5, taskComplete5);
-		createTask(taskName6, jobNumber, taskNotes6, taskTime6, taskAssigned6, taskComplete6);
-		createTask(taskName7, jobNumber, taskNotes7, taskTime7, taskAssigned7, taskComplete7);
-		createTask(taskName8, jobNumber, taskNotes8, taskTime8, taskAssigned8, taskComplete8);
-		createTask(taskName9, jobNumber, taskNotes9, taskTime9, taskAssigned9, taskComplete9);
+		//Creates task objects for each task row and adds them to an array.
+		createTask(taskName1, jobNumber, taskNotes1, taskTime1, taskAssigned1, suspended1, taskComplete1);
+		createTask(taskName2, jobNumber, taskNotes2, taskTime2, taskAssigned2, suspended2, taskComplete2);
+		createTask(taskName3, jobNumber, taskNotes3, taskTime3, taskAssigned3, suspended3, taskComplete3);
+		createTask(taskName4, jobNumber, taskNotes4, taskTime4, taskAssigned4, suspended4, taskComplete4);
+		createTask(taskName5, jobNumber, taskNotes5, taskTime5, taskAssigned5, suspended5, taskComplete5);
+		createTask(taskName6, jobNumber, taskNotes6, taskTime6, taskAssigned6, suspended6, taskComplete6);
+		createTask(taskName7, jobNumber, taskNotes7, taskTime7, taskAssigned7, suspended7, taskComplete7);
+		createTask(taskName8, jobNumber, taskNotes8, taskTime8, taskAssigned8, suspended8, taskComplete8);
+		createTask(taskName9, jobNumber, taskNotes9, taskTime9, taskAssigned9, suspended9, taskComplete9);
 		
+		//Get the values for each task
 		for (Task theTask : taskArrayList) {
 			String taskName = theTask.getTaskName();
 			String taskNotes = theTask.getTaskNotes();
 			int taskTime = theTask.getTaskDuration();
 			String taskAssigned = theTask.getAssignedTo();
+			boolean suspended = theTask.isTaskSuspended();
 			boolean complete = theTask.isTaskComplete();
 			String query = null;
 
@@ -287,8 +297,8 @@ public class JobController implements Initializable {
 					ps.setString(2, taskNotes);
 					ps.setInt(3, taskTime);
 					ps.setInt(4, 6); //change to urgency
-					ps.setBoolean(5, false); //change to suspended
-					ps.setString(6, taskAssigned); // change to user
+					ps.setBoolean(5, suspended); 
+					ps.setString(6, taskAssigned); 
 					ps.setString(7, taskName);
 					ps.setInt(8, jobNumber);
 					ps.executeUpdate();
@@ -325,21 +335,29 @@ public class JobController implements Initializable {
 		}
 	}
 	
+	/**
+	 * Loads a job by a specified job number
+	 * @param ae - The action event passed from the GUI
+	 */
 	public void loadJob(ActionEvent ae) {
+		//Gets the job number from the text field
 		String jobField1 = this.jobField.getText();
 		int jobNumber = Integer.parseInt(jobField1);
+		//clears and prepares all of the text fields
+		newJob(ae);
+		//Selects the job with the specified job number
 		try {
 			ps = Variables.getPreparedStatement();
-
 			String query = "SELECT * FROM jobs WHERE jobs.job_number = ?";
 			ps = connection.prepareStatement(query);
 			ps.setInt(1, jobNumber);
-
 			ResultSet results = ps.executeQuery();
 
+			//If there is no job for the specified job number
 			if (!results.isBeforeFirst()) {
 				System.out.println("ER_JOB_DOES_NOT_EXIST");
 				sqlConfirmation("The specified job does not exist.");
+				//Otherwise create local variables for each value
 			} else {
 				String clientID, quotedParts, motorID, manufacturer, checkedBy, inspectedBy, jobStatus;
 				Date arrivalDate, returnDate, checkedDate, inspectedDate;
@@ -361,8 +379,8 @@ public class JobController implements Initializable {
 					inspectedDate = results.getDate("inspected_date");
 					jobStatus = results.getString("status");
 					approved = results.getBoolean("approved");
-					
-					// this.topPane.setDisable(false);
+
+					/*Enables the text fields to be edited*/
 					this.bottomPane.setDisable(false);
 
 					this.clientID.setText(clientID);
@@ -403,8 +421,6 @@ public class JobController implements Initializable {
 					this.jobStatus.setValue(jobStatus);
 					this.jobStatus.setDisable(false);
 
-					// task stuff here----
-
 					this.inspectedBy.setText(inspectedBy);
 					this.inspectedBy.setDisable(false);
 
@@ -414,7 +430,6 @@ public class JobController implements Initializable {
 
 					this.approved.setSelected(approved);
 					this.approved.setDisable(false);
-
 				}
 			}
 		} catch (SQLException error) {
@@ -424,24 +439,22 @@ public class JobController implements Initializable {
 		loadTask(jobNumber);
 	}
 
+	/**
+	 * Loads the tasks for a specified job number
+	 * @param jobNumber - the job number to load tasks from
+	 */
 	public void loadTask(int jobNumber) {
+		String taskName,  taskNotes, username;
+		int duration, urgency;
+		boolean completed, suspended;
 		try {
 			ps = Variables.getPreparedStatement();
-
-			String query = "SELECT * FROM tasks WHERE tasks.job_number = ?";
+			//Query to obtain all tasks with a specific job number, ordering them by most urgent.
+			String query = "SELECT * FROM tasks WHERE tasks.job_number = ? ORDER BY urgency ASC";
 			ps = connection.prepareStatement(query);
 			ps.setInt(1, jobNumber);
-
 			ResultSet results = ps.executeQuery();
-
-			if (!results.isBeforeFirst()) {
-				System.out.println("no tasks");
-				sqlConfirmation("There are no tasks to this job.");
-			} else {
-				String taskName,  taskNotes, username;
-				int duration, urgency;
-				boolean completed, suspended;
-
+			
 				while (results.next()) {
 					taskName = results.getString("task_name");
 					completed = results.getBoolean("completed");
@@ -450,39 +463,63 @@ public class JobController implements Initializable {
 					username = results.getString("username");
 					duration = results.getInt("duration");
 					urgency = results.getInt("urgency");
+					//Creates a task object and adds it to an array
 					loadedTaskList.add(new Task(taskName, jobNumber, taskNotes, duration, completed, urgency, suspended, username)); 
 				}
-			}
 		} catch (SQLException error) {
-			System.out.println("Error getting Job");
+			System.out.println("Error getting Tasks");
 			System.out.println(error);
 		}
 		displayTasks();
 	}
 	
+	/**
+	 * Displays the tasks on the interface
+	 */
 	public void displayTasks() {
-		/*
-		 * 
-		 */
-		for (Task task : loadedTaskList) {
-			taskName1.setText(task.getTaskName());
-			taskNotes1.setText(task.getTaskNotes());
-			taskTime1.setText(""+task.getTaskDuration());
-			taskAssigned1.setText(task.getAssignedTo());
-			taskComplete1.setSelected(task.isTaskComplete());
+		for (int i = 0; i < loadedTaskList.size(); i++) {
+			Task currentTask = loadedTaskList.get(i);
+			
+			TextArea taskName = taskNameList[i];
+			taskName.setText(currentTask.getTaskName());
+			
+			TextArea taskNotes = taskNotesList[i];
+			taskNotes.setText(currentTask.getTaskNotes());
+			
+			TextField taskTime = taskTimeList[i];
+			taskTime.setText(""+currentTask.getTaskDuration());
+			
+			TextField taskAssigned = taskAssignedList[i];
+			taskAssigned.setText(currentTask.getAssignedTo());
+			
+			CheckBox suspended = checkBoxList[i];
+			suspended.setSelected(currentTask.isTaskSuspended());
+			
+			ToggleButton taskComplete = taskCompletedList[i];
+			taskComplete.setSelected(currentTask.isTaskComplete());
 		}
 	}
 	
+	/**
+	 * Creates a task object and adds it to an array
+	 * @param taskName - the task name
+	 * @param jobNumber - the job number
+	 * @param taskNotes - the task description
+	 * @param taskTime - the duration of the task
+	 * @param taskAssigned - who the task is assigned to
+	 * @param suspended - if the task is suspended
+	 * @param taskComplete - if the task is complete
+	 */
 	public void createTask(TextArea taskName, int jobNumber, TextArea taskNotes, TextField taskTime, 
-			TextField taskAssigned, ToggleButton taskComplete) {
+			TextField taskAssigned, CheckBox suspended, ToggleButton taskComplete) {
 		if (!taskName.getText().isEmpty()) {
 			String taskTimeString = taskTime.getText();
 			int taskLength = Integer.parseInt(taskTimeString);
-			taskArrayList.add(new Task(taskName.getText(), jobNumber, taskNotes.getText(), taskLength, taskComplete.isSelected(), 10, false, taskAssigned.getText()));	
+			taskArrayList.add(new Task(taskName.getText(), jobNumber, taskNotes.getText(), taskLength, taskComplete.isSelected(), 10, suspended.isSelected(), taskAssigned.getText()));	
 		}
 	}
 	
-	/*
+	/**
 	 * Prevent strings being entered into the specified text field
 	 * 
 	 * @param textfield - the specific textfield to modify
@@ -539,27 +576,42 @@ public class JobController implements Initializable {
 		SceneController.activate("menu");
 	}
 	
-	public void initialiseArrayLists() {
+	public void initialiseArrays() {
 		taskArrayList = new ArrayList<Task>();
 		loadedTaskList = new ArrayList<Task>();
-		taskNameList = new ArrayList<TextArea>(Arrays.asList(taskName1, taskName2, taskName3, taskName4, taskName5,
-				taskName5, taskName7, taskName8, taskName9));
-		taskNotesList = new ArrayList<TextArea>(Arrays.asList(taskNotes1, taskNotes2, taskNotes3, taskNotes4,
-				taskNotes5, taskNotes6, taskNotes7, taskNotes8, taskNotes9));
-		taskTimeList = new ArrayList<TextField>(Arrays.asList(taskTime1, taskTime2, taskTime3, taskTime4, taskTime5,
-				taskTime6, taskTime7, taskTime8, taskTime9));
-		taskAssignedList = new ArrayList<TextField>(Arrays.asList(taskAssigned1, taskAssigned2, taskAssigned3,
-				taskAssigned4, taskAssigned5, taskAssigned6, taskAssigned7, taskAssigned8, taskAssigned9));
-		taskCompletedList = new ArrayList<ToggleButton>(Arrays.asList(taskComplete1, taskComplete2, taskComplete3,
-				taskComplete4, taskComplete5, taskComplete6, taskComplete7, taskComplete8, taskComplete9));
+		taskNameList = new TextArea[] {taskName1, taskName2, taskName3, taskName4, taskName5,
+				taskName5, taskName7, taskName8, taskName9};
+		
+		taskNotesList = new TextArea[] {taskNotes1, taskNotes2, taskNotes3, taskNotes4,
+				taskNotes5, taskNotes6, taskNotes7, taskNotes8, taskNotes9};
+		
+		taskTimeList = new TextField[] {taskTime1, taskTime2, taskTime3, taskTime4, taskTime5,
+				taskTime6, taskTime7, taskTime8, taskTime9};
+		
+		taskAssignedList = new TextField[] {taskAssigned1, taskAssigned2, taskAssigned3,
+			taskAssigned4, taskAssigned5, taskAssigned6, taskAssigned7, taskAssigned8, taskAssigned9};
+		
+		checkBoxList = new CheckBox[] {suspended1, suspended2, suspended3, suspended4, suspended5, suspended6, suspended7, suspended8
+				,suspended9};
+		
+		taskCompletedList = new ToggleButton[] {taskComplete1, taskComplete2, taskComplete3,
+				taskComplete4, taskComplete5, taskComplete6, taskComplete7, taskComplete8, taskComplete9};
 		
 	}
-	
-	private void generateToolTips() {
-		jobNoToolTip = new Tooltip();
-		jobField.setTooltip(jobNoToolTip);
-		jobNoToolTip.setText("Enter the Jobs Unique Number (Required)");	
-	}
+
+	 public void navigate(ActionEvent event) {
+	        Button source = (Button) event.getSource();
+
+	        if(source.getText().equals("Jobs")) {
+	            SceneController.activate("Job");
+	        }
+	        else if(source.getText().equals("Task Allocation")) {
+	            SceneController.activate("taskAllocation");
+	        }
+	        else if(source.getText().equals("Job Delay")) {
+	            SceneController.activate("jobDelay");
+	        }
+	    }
 
 	/*
 	 * Display a confirmation message

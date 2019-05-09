@@ -24,13 +24,13 @@ public class Task {
 		
 	}
 
-	public Task(String taskName, int jobNumber, String taskNotes, int taskDuration, boolean taskComplete,
+	public Task(String taskName, int jobNumber, String taskNotes, int taskDuration, boolean taskComplete, boolean taskSuspended,
 			String assignedTo) {
-		super();
 		this.taskName = taskName;
 		this.jobNumber = jobNumber;
 		this.taskNotes = taskNotes;
 		this.taskDuration = taskDuration;
+		this.taskSuspended = taskSuspended;
 		this.taskComplete = taskComplete;
 		this.assignedTo = assignedTo;
 	}

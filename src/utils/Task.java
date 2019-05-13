@@ -12,6 +12,34 @@ public class Task {
     private boolean complete;
     private String assignedTo;
     private String taskNotes;
+    private int taskDuration;
+    private boolean taskComplete;
+    private int taskUrgency;
+    private boolean taskSuspended;
+
+    public Task(String taskName, int jobNumber, String taskNotes, int taskDuration, boolean taskComplete,
+                int taskUrgency, boolean taskSuspended, String assignedTo) {
+        this.taskName = taskName;
+        this.jobNumber = jobNumber;
+        this.taskNotes = taskNotes;
+        this.taskDuration = taskDuration;
+        this.taskComplete = taskComplete;
+        this.taskUrgency = taskUrgency;
+        this.taskSuspended = taskSuspended;
+        this.assignedTo = assignedTo;
+
+    }
+
+    public Task(String taskName, int jobNumber, String taskNotes, int taskDuration, boolean taskComplete, boolean taskSuspended,
+                String assignedTo) {
+        this.taskName = taskName;
+        this.jobNumber = jobNumber;
+        this.taskNotes = taskNotes;
+        this.taskDuration = taskDuration;
+        this.taskSuspended = taskSuspended;
+        this.taskComplete = taskComplete;
+        this.assignedTo = assignedTo;
+    }
 
     public Task(String taskName, String taskNotes, int jobNumber, boolean complete, int duration, int urgency, String assignedTo) {
         this.taskName = taskName;
@@ -108,5 +136,28 @@ public class Task {
     }
     public void setTaskNotes(String taskNotes) {
         this.taskNotes = taskNotes;
+    }
+
+    public int getTaskDuration() {
+        return taskDuration;
+    }
+    public void setTaskDuration(int taskDuration) {
+        this.taskDuration = taskDuration;
+    }
+
+    public boolean isTaskComplete() {
+        return taskComplete;
+    }
+
+    public void setTaskComplete(boolean taskComplete) {
+        this.taskComplete = taskComplete;
+    }
+
+    public boolean isTaskSuspended() {
+        return taskSuspended;
+    }
+
+    public void setTaskSuspended(boolean taskSuspended) {
+        this.taskSuspended = taskSuspended;
     }
 }

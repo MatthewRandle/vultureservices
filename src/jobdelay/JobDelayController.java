@@ -61,10 +61,9 @@ public class JobDelayController implements Initializable {
 
 	            connection = Variables.getConnection();
 	            ps = Variables.getPreparedStatement();
-
+	            //query which pulls jobs from job table in database
 	            String query = "SELECT status FROM jobs WHERE jobs.job_number = ?";
 	            ps = connection.prepareStatement(query);
-	            //sets the ? mark to job number
 	            ps.setInt(1, jobNumber);
 
 	            ResultSet results = ps.executeQuery();
@@ -97,18 +96,14 @@ public class JobDelayController implements Initializable {
 	    */
 	   public void saveStatus() {
 	    	 try {
-	    		 	String jobField;
-	    		 	int jobNumber;  
-	    			String jobStatus;
+	    		 	String jobField = this.jobField.getText();
+	    		 	int jobNumber = Integer.parseInt(jobField);	
+	    			String jobStatus = this.jobStatus.getValue(); 
 	    			
-			 		jobField = this.jobField.getText();
-			 		jobNumber = Integer.parseInt(jobField);			 		
-	    			jobStatus = this.jobStatus.getValue(); 
-
-	    		//SQL
+	    		 //connection to database
 	             connection = Variables.getConnection();
 	             ps = Variables.getPreparedStatement();
-
+	             //update query to update jobs table 
 	             String query = "UPDATE jobs SET status = ? WHERE job_number = ?";
 	             ps = connection.prepareStatement(query);
 	             ps.setString(1, jobStatus);
@@ -139,18 +134,19 @@ public class JobDelayController implements Initializable {
 	     */
 	    public void loadTaskStatus() {
 			   try {
+				   //variables
 				   String taskField = this.taskField.getText();
 				   int taskNumber = Integer.parseInt(taskField);
-				   
+				   //connection to database 
 				   connection = Variables.getConnection();
 		           ps = Variables.getPreparedStatement();
-		           
+		           //query to pull tasks from database
 		           String query = "SELECT suspended FROM tasks WHERE tasks.id = ?";
 		           ps = connection.prepareStatement(query);
 		           ps.setInt(1, taskNumber);
 		           
 		           ResultSet results1 = ps.executeQuery();
-		           
+		           //if task does not exist, throw an error. If it does exist, insert suspended field into taskStatus choicebox
 		           if (!results1.isBeforeFirst() ) {
 		                System.out.println("ER_TASK_DOES_NOT_EXIST");
 		                sqlConfirmation("The specified task does not exist.");
@@ -204,6 +200,10 @@ public class JobDelayController implements Initializable {
 	    	 }
 	     }
 	    
+	    
+	    /*
+	     * Alerts the technicians to any tasks that are not completed when task number is entered
+	     */
 	    public void alertTechnician() {
 	    	try {
 	    		//variables
@@ -245,6 +245,9 @@ public class JobDelayController implements Initializable {
    	 		}	
 	    }
 	    
+	    /*
+	     * Alerts management to any tasks that are overdue
+	     */
 	    public void alertManagement() {
 	    	try {
 	    		//variables 
@@ -293,7 +296,9 @@ public class JobDelayController implements Initializable {
        	 		}
 	    	}
 	    	    
-	    
+	    /*
+	     * Alerts customer services to jobs that are expected to take longer or will take longer than expected
+	     */
 	    public void alertCustomerServices() {
 	    	try {
 	    		//variables

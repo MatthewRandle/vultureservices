@@ -24,6 +24,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -34,6 +35,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -48,6 +50,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -68,7 +71,7 @@ public class JobController implements Initializable {
     public DatePicker arrivalDate, returnDate, checkedDate, inspectedDate;
     public TextArea quotedParts;
     public ChoiceBox < String > jobStatus;
-    public CheckBox approved;
+    public CheckBox approved, notApproved;
     public boolean task1Complete, task2Complete, task3Complete, task4Complete, task5Complete, task6Complete,
     task7Complete, task8Complete;
 
@@ -86,6 +89,7 @@ public class JobController implements Initializable {
     public CheckBox suspended1, suspended2, suspended3, suspended4, suspended5, suspended6, suspended7, suspended8, suspended9;
     public ToggleButton taskComplete1, taskComplete2, taskComplete3, taskComplete4, taskComplete5, taskComplete6, taskComplete7, taskComplete8, taskComplete9;
     public Pane topPane, bottomPane;
+    public Button clearChecked, clearInspected;
     public int index;
 
     /**
@@ -99,14 +103,19 @@ public class JobController implements Initializable {
 
         //Disables the bottom pane when the program starts.
         this.bottomPane.setDisable(true);
+        
         // Initialises the Job Status choice box.
         jobStatus.getItems().addAll("Active", "Suspended");
+        
         //Initialises the arraylists
         initialiseArrays();
+        
         //Prevents strings being entered into the number text fields
         formatTextField(manufactureYear);
         formatTextField(labourTime);
-        for (TextField textfield: taskTimeList) {
+        
+        for (TextField textfield: taskTimeList) 
+        {
             formatTextField(textfield);
         }
     }
@@ -114,67 +123,21 @@ public class JobController implements Initializable {
     /**
      * Creates a new job when the 'new' button is pressed.
      * Clears all of the existing values on the interface.
+     * Checks incase a job with that ID exists
      * @param ActionEvent ae - the actionevent passed from the GUI
      */
     public void newJob(int jobNumber) {
-        clearFields();
-        this.jobField.setText(""+jobNumber);
-    }
-
-    private void clearFields() {
-        // enables and clears all of the fields on the interface.
-        this.bottomPane.setDisable(false);
-        this.clientID.setDisable(false);
-        //this.jobField.clear();
-        this.clientID.clear();
-        this.arrivalDate.setDisable(false);
-        this.arrivalDate.setValue(null);
-        this.returnDate.setDisable(false);
-        this.returnDate.setValue(null);
-        this.quotedParts.setDisable(false);
-        this.quotedParts.clear();
-        this.motorID.setDisable(false);
-        this.motorID.clear();
-        this.manufacturer.setDisable(false);
-        this.manufacturer.clear();
-        this.manufactureYear.setDisable(false);
-        this.manufactureYear.clear();
-        this.labourTime.setDisable(false);
-        this.labourTime.clear();
-        this.checkedBy.setDisable(false);
-        this.checkedBy.clear();
-        this.checkedDate.setDisable(false);
-        this.checkedDate.setValue(null);
-        this.jobStatus.setDisable(false);
-        this.jobStatus.setValue(null);
-        this.inspectedBy.setDisable(false);
-        this.inspectedBy.clear();
-        this.inspectedDate.setDisable(false);
-        this.inspectedDate.setValue(null);
-        this.approved.setDisable(false);
-        this.approved.setSelected(false);
-        this.taskName1.clear();
-        for (TextArea textarea: taskNameList) {
-            textarea.clear();
+        if (!checkJob(jobNumber)) {
+            clearFields();
+        	this.jobField.setText(""+jobNumber);
         }
-        for (TextArea textarea: taskNotesList) {
-            textarea.clear();
-        }
-        for (TextField textfield: taskTimeList) {
-            textfield.clear();
-        }
-        for (TextField textfield: taskAssignedList) {
-            textfield.clear();
-        }
-        for (CheckBox checkbox: checkBoxList) {
-            checkbox.setSelected(false);
-        }
-
-        for (ToggleButton togglebutton: taskCompletedList) {
-            togglebutton.setSelected(false);
+        else
+        {
+        	confirmation("A Job with that number already exists.");
         }
     }
 
+    
     /**
      * Saves the values on the job card into a new job, or overwrites the existing
      * job.
@@ -188,7 +151,7 @@ public class JobController implements Initializable {
             jobStatus, inspectedBy;
             int jobNumber, manufactureYear, labourTime;
             LocalDate arrivalDate, returnDate, checkedDate, inspectedDate;
-            boolean approved;
+            boolean approved, notApproved;
 
             /*
              * Gets the text from the job number fields and converts it to an integer.
@@ -216,16 +179,17 @@ public class JobController implements Initializable {
             inspectedBy = this.inspectedBy.getText();
             inspectedDate = this.inspectedDate.getValue();
             approved = this.approved.isSelected();
+            notApproved = this.notApproved.isSelected();
 
             // Creates prepared statement
             ps = Variables.getPreparedStatement();
 
             // if job number does not exist then save new, else update current record
             String query = "INSERT INTO jobs (job_number, client, arrival_date, return_date, quoted_parts, motor_serial, manufacturer, manufacture_year," +
-                "labour_time, checked_by, checked_date, inspected_by, inspected_date, status, approved) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
+                "labour_time, checked_by, checked_date, inspected_by, inspected_date, status, approved, notApproved) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
                 "ON DUPLICATE KEY UPDATE client=?, arrival_date=?, return_date=?, quoted_parts=?, motor_serial=?, manufacturer=?, manufacture_year=?, labour_time=?," +
-                "checked_by=?, checked_date=?, inspected_by=?, inspected_date=?, status=?, approved=?";
+                "checked_by=?, checked_date=?, inspected_by=?, inspected_date=?, status=?, approved=?, notApproved=?";
             ps = connection.prepareStatement(query);
             ps.setInt(1, jobNumber);
             ps.setString(2, clientID);
@@ -242,22 +206,26 @@ public class JobController implements Initializable {
             ps.setDate(13, Date.valueOf(inspectedDate));
             ps.setString(14, jobStatus);
             ps.setBoolean(15, approved);
-            ps.setString(16, clientID);
-            ps.setDate(17, Date.valueOf(arrivalDate));
-            ps.setDate(18, Date.valueOf(returnDate));
-            ps.setString(19, quotedParts);
-            ps.setString(20, motorID);
-            ps.setString(21, manufacturer);
-            ps.setInt(22, manufactureYear);
-            ps.setInt(23, labourTime);
-            ps.setString(24, checkedBy);
-            ps.setDate(25, Date.valueOf(checkedDate));
-            ps.setString(26, inspectedBy);
-            ps.setDate(27, Date.valueOf(inspectedDate));
-            ps.setString(28, jobStatus);
-            ps.setBoolean(29, approved);
-            ps.executeUpdate();
-            confirmation("Job Updated Successfully");
+            ps.setBoolean(16, notApproved);
+            ps.setString(17, clientID);
+            ps.setDate(18, Date.valueOf(arrivalDate));
+            ps.setDate(19, Date.valueOf(returnDate));
+            ps.setString(20, quotedParts);
+            ps.setString(21, motorID);
+            ps.setString(22, manufacturer);
+            ps.setInt(23, manufactureYear);
+            ps.setInt(24, labourTime);
+            ps.setString(25, checkedBy);
+            ps.setDate(26, Date.valueOf(checkedDate));
+            ps.setString(27, inspectedBy);
+            ps.setDate(28, Date.valueOf(inspectedDate));
+            ps.setString(29, jobStatus);
+            ps.setBoolean(30, approved);
+            ps.setBoolean(31, notApproved);
+            if(checkInputErrors()) {
+                ps.executeUpdate();	
+                confirmation("Job Updated Successfully");
+            }
         } catch (SQLException error) {
             confirmation("The Data Was Not Inserted Successfully");
             System.out.println("Error Inserting Into Database");
@@ -333,7 +301,6 @@ public class JobController implements Initializable {
                     ps.setString(8, taskAssigned);
                     ps.executeUpdate();
                 }
-                confirmation("Job Updated Successfully");
             } catch (SQLException error) {
                 confirmation("The Data Was Not Inserted Successfully");
                 System.out.println("Error Inserting Into Database");
@@ -376,7 +343,7 @@ public class JobController implements Initializable {
                 String clientID, quotedParts, motorID, manufacturer, checkedBy, inspectedBy, jobStatus;
                 Date arrivalDate, returnDate, checkedDate, inspectedDate;
                 int manufactureYear, labourTime;
-                boolean approved;
+                boolean approved, notApproved;
 
                 while (results.next()) {
                     clientID = results.getString("client");
@@ -393,6 +360,7 @@ public class JobController implements Initializable {
                     inspectedDate = results.getDate("inspected_date");
                     jobStatus = results.getString("status");
                     approved = results.getBoolean("approved");
+                    notApproved = results.getBoolean("notApproved");
 
                     /*Enables the text fields to be edited*/
                     this.bottomPane.setDisable(false);
@@ -447,6 +415,9 @@ public class JobController implements Initializable {
 
                     this.approved.setSelected(approved);
                     this.approved.setDisable(false);
+                    
+                    this.notApproved.setSelected(notApproved);
+                    this.notApproved.setDisable(false);
                 }
             }
         } catch (SQLException error) {
@@ -460,11 +431,13 @@ public class JobController implements Initializable {
      * Loads the tasks for a specified job number
      * @param jobNumber - the job number to load tasks from
      */
-    public void loadTask(int jobNumber) {
+    public void loadTask(int jobNumber) 
+    {
         String taskName, taskNotes, username;
         int duration, urgency;
         boolean completed, suspended;
-        try {
+        try 
+        {
             ps = Variables.getPreparedStatement();
             //Query to obtain all tasks with a specific job number, ordering them by most urgent.
             String query = "SELECT * FROM tasks WHERE tasks.job_number = ? ORDER BY urgency ASC";
@@ -472,7 +445,8 @@ public class JobController implements Initializable {
             ps.setInt(1, jobNumber);
             ResultSet results = ps.executeQuery();
             loadedTaskList = new ArrayList < Task > ();
-            while (results.next()) {
+            while (results.next()) 
+            {
                 taskName = results.getString("task_name");
                 completed = results.getBoolean("completed");
                 suspended = results.getBoolean("suspended");
@@ -509,14 +483,50 @@ public class JobController implements Initializable {
             TextField taskAssigned = taskAssignedList[i];
             taskAssigned.setText(currentTask.getAssignedTo());
 
+
+            
+            ToggleButton taskComplete = taskCompletedList[i];
+            taskComplete.setSelected(currentTask.isTaskComplete());
+
             CheckBox suspended = checkBoxList[i];
             suspended.setSelected(currentTask.isTaskSuspended());
 
-            ToggleButton taskComplete = taskCompletedList[i];
-            taskComplete.setSelected(currentTask.isTaskComplete());
+        	taskName.setDisable(currentTask.isTaskSuspended());
+        	taskNotes.setDisable(currentTask.isTaskSuspended());
+        	taskTime.setDisable(currentTask.isTaskSuspended());
+        	taskAssigned.setDisable(currentTask.isTaskSuspended());
+        	taskComplete.setDisable(currentTask.isTaskSuspended());
+            	
+            
         }
     }
 
+    public void suspendTask(ActionEvent ae) {
+    	CheckBox checked = (CheckBox) ae.getSource();
+    	int position = 0;
+    	for (CheckBox checkbox : checkBoxList) {
+    	    if (checkbox.equals(checked)) {
+    	    	TextArea taskName = taskNameList[position];
+    	    	TextArea taskNotes = taskNotesList[position];
+                TextField taskTime = taskTimeList[position];
+                TextField taskAssigned = taskAssignedList[position];
+                ToggleButton taskComplete = taskCompletedList[position];
+                
+                taskName.setDisable(checked.isSelected());	
+
+    	    	taskNotes.setDisable(checked.isSelected());
+
+                taskTime.setDisable(checked.isSelected());
+
+                taskAssigned.setDisable(checked.isSelected());
+
+                taskComplete.setDisable(checked.isSelected());
+
+    	    }
+    	    position += 1;
+    	} 
+    	}
+    
     /**
      * Creates a task object and adds it to an array
      * @param taskName - the task name
@@ -535,6 +545,72 @@ public class JobController implements Initializable {
             taskArrayList.add(new Task(taskName.getText(), jobNumber, taskNotes.getText(), taskLength, taskComplete.isSelected(), 10, suspended.isSelected(), taskAssigned.getText()));
         }
     }
+    
+    /**
+     * Exports the job card to a text file.
+     * File path: Desktop/Vulture_Services
+     * @param ae - The action event from the GUI
+     */
+    public void exportJob(ActionEvent ae) 
+    {
+    	//Converts the values from the job card into Java variables
+        String jobField = this.jobField.getText();
+        int jobNumber = Integer.parseInt(jobField);
+    	LocalDate arrivalDate = this.arrivalDate.getValue();
+        LocalDate returnDate = this.returnDate.getValue();
+        String quotedParts = this.quotedParts.getText();
+        String motorID = this.motorID.getText();
+        String clientID = this.clientID.getText();
+        String manufacturer = this.manufacturer.getText();
+        String manYear = this.manufactureYear.getText();
+        int manufactureYear = Integer.parseInt(manYear);
+        String labourTimeValue = this.labourTime.getText();
+        int labourTime = Integer.parseInt(labourTimeValue);
+        String jobStatus = this.jobStatus.getValue();
+        String inspectedBy = this.inspectedBy.getText();
+        LocalDate inspectedDate = this.inspectedDate.getValue();
+        
+        //Gets the current local date and time 
+        SimpleDateFormat dateFormat= new SimpleDateFormat("'Date:' yyyy-MM-dd 'Time:' HH:mm:ss z");  
+        Date date = new Date(System.currentTimeMillis());  
+        
+        //Path for the file to be printed to
+        String filePath = System.getProperty("user.home") + "/Desktop/Vulture_Services";
+        
+        //If the file directory does not exist, create a new one
+        File directory = new File(filePath);
+        if (!directory.exists()) 
+        {
+        	directory.mkdirs();
+        }
+        
+        //Print out the job card to the text file. File Name: 'JOB_jobnumber.txt'
+        try (PrintWriter out = new PrintWriter(filePath + "/JOB_" + jobNumber + ".txt")) 
+        { 
+        	out.println("Vulture Services Job - " + dateFormat.format(date));
+        	out.println("Client Name: "+clientID);
+			out.println("Job Number: "+jobNumber);
+			out.println("Arrival Date: "+arrivalDate);
+			out.println("Return Date: "+returnDate);
+			out.println("Quoted Parts: "+quotedParts);
+			out.println("Motor Serial: "+motorID);
+			out.println("Manufacturer: "+manufacturer);
+			out.println("Manufacture Year: "+manufactureYear);
+			out.println("Labour Time: "+labourTime);
+			out.println("Inspected By: "+inspectedBy);
+			out.println("Inspected Date: "+inspectedDate);
+			out.println("Job Status: "+jobStatus);
+    	//Catch file not found exception
+        } catch (FileNotFoundException e) {
+			confirmation("The File Was Not Found");
+			e.printStackTrace();
+    	} catch (Exception e) {
+			confirmation("The file was not exported");
+			e.printStackTrace();
+		}
+        //Confirm that the job card has been exported.
+        confirmation("The Job Card Has Been Exported.");
+    }
 
     /**
      * Prevent strings being entered into the specified text field
@@ -547,7 +623,7 @@ public class JobController implements Initializable {
      */
     public void formatTextField(TextField textfield) {
         textfield.setTextFormatter(new TextFormatter < > (c -> {
-            if (!c.getControlNewText().matches("\\d*")) {
+            if (!c.getControlNewText().matches("\\d*") && !c.getControlNewText().matches("\b")) {
                 return null;
             } else {
                 return c;
@@ -577,23 +653,118 @@ public class JobController implements Initializable {
         }
         return exists;
     }
+    
+    public void navigate(ActionEvent event) {
+        Button source = (Button) event.getSource();
+
+        if(source.getText().equals("Dashboard")) {
+            SceneController.activate("userAccount");
+        }
+    }
+    
+    public boolean checkJob(int jobNumber) {
+        boolean exists = false;
+        try {
+            ps = Variables.getPreparedStatement();
+
+            String query = "SELECT * FROM tasks WHERE job_number=?;";
+            ps = connection.prepareStatement(query);
+            ps.setInt(1, jobNumber);
+            
+            ResultSet results = ps.executeQuery();
+            if (!results.isBeforeFirst()) {
+                exists = false;
+            } else {
+                exists = true;
+            }
+        } catch (SQLException error) {
+            System.out.println("Error getting Job");
+            System.out.println(error);
+        }
+        return exists;
+    }
 
     public void setInspectedBy() {
         String username;
         username = Variables.getUserName();
         this.inspectedBy.setText("" + username);
+        this.inspectedDate.setValue(LocalDate.now());
     }
 
     public void setCheckedBy() {
         String username;
         username = Variables.getUserName();
         this.checkedBy.setText("" + username);
+        this.checkedDate.setValue(LocalDate.now());
+    }
+    
+    public void clearField(ActionEvent ae) {
+    	if (ae.getSource() == clearChecked) {
+    		checkedBy.clear();
+    		checkedDate.setValue(null);
+    	}
+    	else if (ae.getSource() == clearInspected) {
+    		inspectedBy.clear();
+    		inspectedDate.setValue(null);
+    	}
     }
 
     public void loadMenuScreen(ActionEvent ae) {
         SceneController.activate("menu");
     }
-
+    
+    public void calculateLabourTime(KeyEvent key) {
+    	long totalLabourTime = 0;
+    	long timeNeeded = 0;
+    	
+    	for (TextField field : taskTimeList) {
+    		if(!field.getText().equals("")) {
+			String textField = field.getText();
+    		timeNeeded += Long.parseLong(textField);
+    		
+    		totalLabourTime = timeNeeded;
+    		}
+    	}
+    	labourTime.setText("" + totalLabourTime);
+    }
+    
+    /*
+     * Checks to see if the user has input invalid data into the fields
+     * @return false if there are errors
+     * @return true if there are no errors
+     */
+    public boolean checkInputErrors() {
+    	try {
+        	LocalDate arrivalDate = this.arrivalDate.getValue();
+            LocalDate returnDate = this.returnDate.getValue();
+            String jobNumber = this.jobField.getText();
+            
+            //Check that the Return Date is after the Arrival Date
+            if (arrivalDate.isAfter(returnDate)) 
+            {
+            	confirmation("You Cannot have Return Date before the Arrival Date");
+            	return false;
+            }
+            
+            //Make sure the job number is not empty when saving a job
+            if (jobNumber.trim().isEmpty()) {
+            	confirmation("You Must Enter a Job Number");
+            	return false;
+            }
+            
+            //Check to make sure that both the approved and not approved checkboxes arent selected
+            if (approved.isSelected() && notApproved.isSelected()) {
+            	confirmation("A job can only be Approved or Not Approved.");
+            	return false;
+            }
+            
+        } catch (NullPointerException exception) {
+        	System.out.println("No Dates Entered");
+    	}	catch (NoSuchElementException exception) {
+    		System.out.println("No value entered");
+    	}
+		return true;
+    }
     public void initialiseArrays() {
         taskArrayList = new ArrayList < Task > ();
         taskNameList = new TextArea[] {
@@ -670,20 +841,6 @@ public class JobController implements Initializable {
 
     }
 
-    public void navigate(ActionEvent event) {
-        Button source = (Button) event.getSource();
-
-        if (source.getText().equals("Jobs")) {
-            SceneController.activate("Job");
-        } else
-        if (source.getText().equals("Task Allocation")) {
-            SceneController.activate("taskAllocation");
-        } else
-        if (source.getText().equals("Job Delay")) {
-            SceneController.activate("jobDelay");
-        }
-    }
-
     /*
      * Display a confirmation message
      */
@@ -693,6 +850,7 @@ public class JobController implements Initializable {
         alert.show();
     }
     
+    //convert these to 1
     public void enterJobNumber(ActionEvent ae) {
     	TextInputDialog dialog = new TextInputDialog();
     	 
@@ -722,68 +880,62 @@ public class JobController implements Initializable {
     }
     
     /**
-     * Exports the job card to a text file.
-     * File path: Desktop/Vulture_Services
-     * @param ae - The action event from the GUI
+     * Utility function to clear all fields.
      */
-    public void exportJob(ActionEvent ae) 
-    {
-    	//Converts the values from the job card into Java variables
-        String jobField = this.jobField.getText();
-        int jobNumber = Integer.parseInt(jobField);
-    	LocalDate arrivalDate = this.arrivalDate.getValue();
-        LocalDate returnDate = this.returnDate.getValue();
-        String quotedParts = this.quotedParts.getText();
-        String motorID = this.motorID.getText();
-        String clientID = this.clientID.getText();
-        String manufacturer = this.manufacturer.getText();
-        String manYear = this.manufactureYear.getText();
-        int manufactureYear = Integer.parseInt(manYear);
-        String labourTimeValue = this.labourTime.getText();
-        int labourTime = Integer.parseInt(labourTimeValue);
-        String jobStatus = this.jobStatus.getValue();
-        String inspectedBy = this.inspectedBy.getText();
-        LocalDate inspectedDate = this.inspectedDate.getValue();
+    private void clearFields() {
+        // enables and clears all of the fields on the interface.
+        this.bottomPane.setDisable(false);
+        this.clientID.setDisable(false);
+        this.clientID.clear();
+        this.arrivalDate.setDisable(false);
+        this.arrivalDate.setValue(null);
+        this.returnDate.setDisable(false);
+        this.returnDate.setValue(null);
+        this.quotedParts.setDisable(false);
+        this.quotedParts.clear();
+        this.clearChecked.setDisable(false);
+        this.motorID.setDisable(false);
+        this.motorID.clear();
+        this.manufacturer.setDisable(false);
+        this.manufacturer.clear();
+        this.manufactureYear.setDisable(false);
+        this.manufactureYear.clear();
+        this.labourTime.setDisable(false);
+        this.labourTime.clear();
+        this.checkedBy.setDisable(false);
+        this.checkedBy.clear();
+        this.checkedDate.setDisable(false);
+        this.checkedDate.setValue(null);
+        this.jobStatus.setDisable(false);
+        this.jobStatus.setValue(null);
+        this.inspectedBy.setDisable(false);
+        this.inspectedBy.clear();
+        this.inspectedDate.setDisable(false);
+        this.inspectedDate.setValue(null);
+        this.approved.setDisable(false);
+        this.approved.setSelected(false);
+        this.notApproved.setDisable(false);
+        this.notApproved.setSelected(false);
+        this.taskName1.clear();
         
-        //Gets the current local date and time 
-        SimpleDateFormat dateFormat= new SimpleDateFormat("'Date:' yyyy-MM-dd 'Time:' HH:mm:ss z");  
-        Date date = new Date(System.currentTimeMillis());  
-        
-        //Path for the file to be printed to
-        String filePath = System.getProperty("user.home") + "/Desktop/Vulture_Services";
-        
-        //If the file directory does not exist, create a new one
-        File directory = new File(filePath);
-        if (!directory.exists()) 
-        {
-        	directory.mkdirs();
+        for (TextArea textarea: taskNameList) {
+            textarea.clear();
         }
-        
-        //Print out the job card to the text file. File Name: 'JOB_jobnumber.txt'
-        try (PrintWriter out = new PrintWriter(filePath + "/JOB_" + jobNumber + ".txt")) 
-        { 
-        	out.println("Vulture Services Job - " + dateFormat.format(date));
-        	out.println("Client Name: "+clientID);
-			out.println("Job Number: "+jobNumber);
-			out.println("Arrival Date: "+arrivalDate);
-			out.println("Return Date: "+returnDate);
-			out.println("Quoted Parts: "+quotedParts);
-			out.println("Motor Serial: "+motorID);
-			out.println("Manufacturer: "+manufacturer);
-			out.println("Manufacture Year: "+manufactureYear);
-			out.println("Labour Time: "+labourTime);
-			out.println("Inspected By: "+inspectedBy);
-			out.println("Inspected Date: "+inspectedDate);
-			out.println("Job Status: "+jobStatus);
-    	//Catch file not found exception
-        } catch (FileNotFoundException e) {
-			confirmation("The File Was Not Found");
-			e.printStackTrace();
-    	} catch (Exception e) {
-			confirmation("The file was not exported");
-			e.printStackTrace();
-		}
-        //Confirm that the job card has been exported.
-        confirmation("The Job Card Has Been Exported.");
+        for (TextArea textarea: taskNotesList) {
+            textarea.clear();
+        }
+        for (TextField textfield: taskTimeList) {
+            textfield.clear();
+        }
+        for (TextField textfield: taskAssignedList) {
+            textfield.clear();
+        }
+        for (CheckBox checkbox: checkBoxList) {
+            checkbox.setSelected(false);
+        }
+
+        for (ToggleButton togglebutton: taskCompletedList) {
+            togglebutton.setSelected(false);
+        }
     }
 }

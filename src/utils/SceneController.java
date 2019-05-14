@@ -30,13 +30,6 @@ public final class SceneController extends Application {
         primaryStage.sizeToScene();
         primaryStage.setResizable(false);
         primaryStage.show();
-
-        //Register all available scenes here
-        //SceneController.addScreen("userAccount", FXMLLoader.load(getClass().getResource( "/userAccount/UserAccount.fxml" )));
-        //SceneController.addScreen("Job", FXMLLoader.load(getClass().getResource( "/jobcard/Job.fxml" )));
-        //SceneController.addScreen("taskAllocation", FXMLLoader.load(getClass().getResource( "/taskAllocation/TaskAllocation.fxml" )));
-        //SceneController.addScreen("jobDelay", FXMLLoader.load(getClass().getResource( "/jobdelay/JobDelay.fxml" )));
-        //SceneController.addScreen("statistics", FXMLLoader.load(getClass().getResource( "/statistics/Statistics.fxml" )));
     }
 
     public void registerScreens() throws Exception {

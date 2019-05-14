@@ -23,6 +23,14 @@
                </HBox.margin>
             </Button>
             <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <Button fx:id="notifications" disable="true" mnemonicParsing="false" onAction="#showNotifications" style="-fx-background-color: green; -fx-text-fill: white;" text="New Notifications" visible="false">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="CLOSED_HAND" />
+               </cursor>
+            </Button>
             <Label fx:id="username" />
          </children>
          <padding>
@@ -59,7 +67,7 @@
             </ScrollPane>
             <Label layoutX="723.0" layoutY="337.0" text="Your Suspended Tasks" />
             <Group layoutY="-23.0" />
-            <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="52.0" layoutY="360.0" prefHeight="233.0" prefWidth="650.0" style="-fx-border-color: green;">
+            <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="52.0" layoutY="360.0" prefHeight="233.0" prefWidth="650.0" style="-fx-border-color: red;">
                <content>
                   <TableView fx:id="overdueTaskTable" prefHeight="359.0" prefWidth="481.0">
                      <columns>
@@ -79,10 +87,10 @@
             <Label layoutX="802.0" layoutY="84.0" text="Total Completed Jobs" />
             <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="52.0" layoutY="81.0" prefHeight="233.0" prefWidth="650.0" style="-fx-border-color: green;">
                <content>
-                  <TableView fx:id="currentJobsTable" prefHeight="359.0" prefWidth="481.0">
+                  <TableView fx:id="activeJobsTable" prefHeight="359.0" prefWidth="481.0">
                      <columns>
-                        <TableColumn fx:id="clientNameCol" prefWidth="110.0" text="Client" />
-                        <TableColumn fx:id="jobNumberCol" prefWidth="100.0" text="Job Number" />
+                        <TableColumn fx:id="clientCol" prefWidth="110.0" text="Client" />
+                        <TableColumn fx:id="jobNumberCol_job" prefWidth="100.0" text="Job Number" />
                         <TableColumn fx:id="arrivalDateCol" minWidth="0.0" prefWidth="160.0" text="Arrival Date" />
                         <TableColumn fx:id="returnDateCol" minWidth="0.0" prefWidth="160.0" text="Return Date" />
                         <TableColumn fx:id="labourTimeCol" minWidth="0.0" prefWidth="124.0" text="Labour Time" />
@@ -120,8 +128,8 @@
                <content>
                   <TableView fx:id="overdueJobsTable" prefHeight="359.0" prefWidth="481.0">
                      <columns>
-                        <TableColumn fx:id="clientNameCol_overdue" prefWidth="110.0" text="Client" />
-                        <TableColumn fx:id="jobNumberCol_overdue" prefWidth="100.0" text="Job Number" />
+                        <TableColumn fx:id="clientCol_overdue" prefWidth="110.0" text="Client" />
+                        <TableColumn fx:id="jobNumberCol_job_overdue" prefWidth="100.0" text="Job Number" />
                         <TableColumn fx:id="arrivalDateCol_overdue" minWidth="0.0" prefWidth="160.0" text="Arrival Date" />
                         <TableColumn fx:id="returnDateCol_overdue" minWidth="0.0" prefWidth="160.0" text="Return Date" />
                         <TableColumn fx:id="labourTimeCol_overdue" minWidth="0.0" prefWidth="124.0" text="Labour Time" />
@@ -137,10 +145,10 @@
                <content>
                   <TableView fx:id="partsNeededTable" prefHeight="359.0" prefWidth="481.0">
                      <columns>
-                        <TableColumn fx:id="jobNumberCol" prefWidth="95.0" text="Job" />
-                        <TableColumn fx:id="clientNameCol" prefWidth="125.0" text="Client" />
-                        <TableColumn fx:id="partsNeededCol" minWidth="0.0" prefWidth="278.0" text="Parts Needed" />
-                        <TableColumn fx:id="returnDateCol" minWidth="0.0" prefWidth="147.0" text="Return Date" />
+                        <TableColumn fx:id="jobNumberCol_hr" prefWidth="95.0" text="Job" />
+                        <TableColumn fx:id="clientCol_hr" prefWidth="125.0" text="Client" />
+                        <TableColumn fx:id="partsNeededCol_hr" minWidth="0.0" prefWidth="278.0" text="Parts Needed" />
+                        <TableColumn fx:id="returnDateCol_hr" minWidth="0.0" prefWidth="147.0" text="Return Date" />
                      </columns>
                   </TableView>
                </content>
@@ -158,7 +166,7 @@
             <Label layoutX="93.0" layoutY="20.0" text="Users" />
             <Group layoutY="-23.0" />
             <Label layoutX="474.0" layoutY="20.0" text="Jobs that need parts" />
-            <Label layoutX="868.0" layoutY="20.0" text="If parts not available click on row to suspend job" />
+            <Label layoutX="827.0" layoutY="20.0" text="If parts not available double click on row to suspend job" />
             <Button layoutX="93.0" layoutY="532.0" mnemonicParsing="false" onAction="#newUser" prefHeight="38.0" prefWidth="300.0" style="-fx-border-color: green;" text="New User" />
             <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="474.0" layoutY="337.0" prefHeight="233.0" prefWidth="250.0" style="-fx-border-color: orange;">
                <content>

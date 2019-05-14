@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import login.LoginController;
+import userAccount.UserAccountController;
 
 public final class Variables {
     private static Integer userID;
@@ -11,6 +12,7 @@ public final class Variables {
     public static PreparedStatement ps;
     private static String username;
     private static String userType;
+    private static UserAccountController userAccountController;
 
     public static Integer getUserID() {
         return userID;
@@ -40,4 +42,7 @@ public final class Variables {
     public static void setPreparedStatement(PreparedStatement ps) {
         Variables.ps = ps;
     }
+
+    public static UserAccountController getUserAccountController() { return userAccountController; }
+    public static void setUserAccountController(UserAccountController userAccountController) { Variables.userAccountController = userAccountController; }
 }

@@ -422,14 +422,20 @@ public class UserAccountController implements Initializable {
                             Parent root = loader.load();
 
                             UserModalController userModalController = loader.getController();
+                            userModalController.setEditModal();
                             userModalController.setUsername(rowData.getUsername());
                             userModalController.setUserRole(rowData.getType());
+                            userModalController.getUserID();
 
                             Stage stage = new Stage();
                             stage.setScene(new Scene(root));
                             stage.setResizable(false);
                             stage.initModality(Modality.APPLICATION_MODAL);
                             stage.showAndWait();
+
+                            //reload users table to show changes
+                            userList = FXCollections.observableArrayList();
+                            getUsers();
                         }
                     }
                     catch(IOException err) {
@@ -442,7 +448,26 @@ public class UserAccountController implements Initializable {
     }
 
     public void newUser() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("UserModal.fxml"));
+            Parent root = loader.load();
 
+            UserModalController userModalController = loader.getController();
+            userModalController.setNewModal();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            //reload users table to show changes
+            userList = FXCollections.observableArrayList();
+            getUsers();
+        }
+        catch(IOException err) {
+            err.printStackTrace();
+        }
     }
 
     public void orderMoreParts() {

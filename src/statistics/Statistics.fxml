@@ -6,9 +6,42 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="875.0" prefWidth="1207.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="statistics.StatisticsController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="statistics.StatisticsController">
    <children>
-      <Pane prefHeight="894.0" prefWidth="1207.0" />
+      <Pane prefHeight="894.0" prefWidth="1207.0">
+         <children>
+            <BarChart fx:id="jobTaskDurationChart" layoutX="25.0" layoutY="42.0" prefHeight="340.0" prefWidth="426.0">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" fx:id="xAxis" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis fx:id="yAxis" side="LEFT" />
+              </yAxis>
+            </BarChart>
+            <BarChart fx:id="estActualTaskDurationChart" layoutX="743.0" layoutY="47.0" prefHeight="329.0" prefWidth="450.0">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" fx:id="xAxis_durationVsEst" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis fx:id="yAxis_durationVsEst" side="LEFT" />
+              </yAxis>
+            </BarChart>
+            <BarChart fx:id="unexpectedDelayChart" layoutX="46.0" layoutY="376.0" prefHeight="346.0" prefWidth="462.0">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" fx:id="xAxis_unexpectedDelay" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis fx:id="yAxis_unexpectedDelay" side="LEFT" />
+              </yAxis>
+            </BarChart>
+            <BarChart fx:id="finalInspectionFailureChart" layoutX="722.0" layoutY="382.0" prefHeight="314.0" prefWidth="393.0">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" fx:id="xAxis_finalInspectionFailureChart" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis fx:id="yAxis_finalInspectionFailureChart" side="LEFT" />
+              </yAxis>
+            </BarChart>
+         </children></Pane>
    </children>
 </VBox>

@@ -41,8 +41,7 @@ public class Task {
 		this.assignedDate = assignedDate;
 		
 	}
-
-
+	
 	/*
 	 * constructer for a task within the system 
 	 * @param taskname the name of the task
@@ -50,15 +49,19 @@ public class Task {
 	 * @param taskNotes short description of the task 
 	 * @param taskDuration the expected duration of the task 
 	 * @param taskComplete if the task is completed 
+	 * @param urgency the urgency level of the task
+	 * @param suspended if the task is suspended or not
 	 * @param assignedTo a user name of a technician in which the task is assigned to 
 	 */
-	public Task(String taskName, int jobNumber, String taskNotes, int taskDuration, boolean taskComplete,
+	public Task(String taskName, int jobNumber, String taskNotes, int taskDuration, boolean taskComplete, int urgency, boolean suspended,
 			String assignedTo) {
 		this.taskName = taskName;
 		this.jobNumber = jobNumber;
 		this.taskNotes = taskNotes;
 		this.taskDuration = taskDuration;
 		this.taskComplete = taskComplete;
+		this.taskUrgency = urgency;
+		this.taskSuspended = suspended;
 		this.assignedTo = assignedTo;
 	}
 

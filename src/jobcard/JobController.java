@@ -127,7 +127,8 @@ public class JobController implements Initializable {
      * @param ActionEvent ae - the actionevent passed from the GUI
      */
     public void newJob(int jobNumber) {
-        if (!checkJob(jobNumber)) {
+        taskArrayList = new ArrayList<>();
+    	if (!checkJob(jobNumber)) {
             clearFields();
         	this.jobField.setText(""+jobNumber);
         }
@@ -149,8 +150,10 @@ public class JobController implements Initializable {
             // Job Details Section
             String jobField, clientID, quotedParts, motorID, manufacturer, manYear, labourTimeValue, checkedBy,
             jobStatus, inspectedBy;
-            int jobNumber, manufactureYear, labourTime;
-            LocalDate arrivalDate, returnDate, checkedDate, inspectedDate;
+            int jobNumber, labourTime;
+            Integer manufactureYear;
+            LocalDate arrivalDateValue, returnDateValue, checkedDateValue, inspectedDateValue;
+            Date arrivalDate, returnDate, checkedDate, inspectedDate;
             boolean approved, notApproved;
 
             /*
@@ -163,21 +166,62 @@ public class JobController implements Initializable {
              * gets the values from all of the fields on the interface and stores them into
              * local variables.
              */
-            arrivalDate = this.arrivalDate.getValue();
-            returnDate = this.returnDate.getValue();
+            arrivalDateValue = this.arrivalDate.getValue();
+            if (arrivalDateValue != null) {
+            	arrivalDate = Date.valueOf(arrivalDateValue);
+            }
+            else
+            {
+            	arrivalDate = null;
+            }
+            
+            returnDateValue = this.returnDate.getValue();
+            if (returnDateValue != null) {
+            	returnDate = Date.valueOf(returnDateValue);
+            }
+            else
+            {
+            	returnDate = null;
+            }
+
             quotedParts = this.quotedParts.getText();
             motorID = this.motorID.getText();
             clientID = this.clientID.getText();
             manufacturer = this.manufacturer.getText();
             manYear = this.manufactureYear.getText();
+            if (!this.manufactureYear.getText().isEmpty()) {
             manufactureYear = Integer.parseInt(manYear);
+            }
+            else {
+            	manufactureYear = 0; //CHECK THIS
+            }
             labourTimeValue = this.labourTime.getText();
             labourTime = Integer.parseInt(labourTimeValue);
             checkedBy = this.checkedBy.getText();
-            checkedDate = this.checkedDate.getValue();
+            
+           checkedDateValue = this.checkedDate.getValue();
+    	   if (checkedDateValue != null) {
+               checkedDate = Date.valueOf(checkedDateValue);
+    	   }
+    	   else {
+    		   checkedDate = null;
+    	   }
+
+            
             jobStatus = this.jobStatus.getValue();
             inspectedBy = this.inspectedBy.getText();
-            inspectedDate = this.inspectedDate.getValue();
+            
+            inspectedDateValue = this.inspectedDate.getValue();
+            if (inspectedDateValue != null)
+            {
+            	inspectedDate = Date.valueOf(inspectedDateValue);
+            }
+            else {
+            	inspectedDate = null;
+            }
+            
+        	java.util.Date currentDate = new java.util.Date(System.currentTimeMillis());
+            
             approved = this.approved.isSelected();
             notApproved = this.notApproved.isSelected();
 
@@ -186,42 +230,55 @@ public class JobController implements Initializable {
 
             // if job number does not exist then save new, else update current record
             String query = "INSERT INTO jobs (job_number, client, arrival_date, return_date, quoted_parts, motor_serial, manufacturer, manufacture_year," +
-                "labour_time, checked_by, checked_date, inspected_by, inspected_date, status, approved, notApproved) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
+                "labour_time, checked_by, checked_date, inspected_by, inspected_date, status, approved, notApproved, start_date) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" +
                 "ON DUPLICATE KEY UPDATE client=?, arrival_date=?, return_date=?, quoted_parts=?, motor_serial=?, manufacturer=?, manufacture_year=?, labour_time=?," +
                 "checked_by=?, checked_date=?, inspected_by=?, inspected_date=?, status=?, approved=?, notApproved=?";
             ps = connection.prepareStatement(query);
             ps.setInt(1, jobNumber);
             ps.setString(2, clientID);
-            ps.setDate(3, Date.valueOf(arrivalDate));
-            ps.setDate(4, Date.valueOf(returnDate));
+            ps.setDate(3, arrivalDate);
+            ps.setDate(4, returnDate);
             ps.setString(5, quotedParts);
             ps.setString(6, motorID);
             ps.setString(7, manufacturer);
+            if (checkedDateValue != null) {
             ps.setInt(8, manufactureYear);
+            }
+            else
+            {
+            ps.setNull(8, java.sql.Types.NULL);
+            }
             ps.setInt(9, labourTime);
             ps.setString(10, checkedBy);
-            ps.setDate(11, Date.valueOf(checkedDate));
+            ps.setDate(11, checkedDate);
             ps.setString(12, inspectedBy);
-            ps.setDate(13, Date.valueOf(inspectedDate));
+            ps.setDate(13, inspectedDate);
             ps.setString(14, jobStatus);
             ps.setBoolean(15, approved);
             ps.setBoolean(16, notApproved);
-            ps.setString(17, clientID);
-            ps.setDate(18, Date.valueOf(arrivalDate));
-            ps.setDate(19, Date.valueOf(returnDate));
-            ps.setString(20, quotedParts);
-            ps.setString(21, motorID);
-            ps.setString(22, manufacturer);
-            ps.setInt(23, manufactureYear);
-            ps.setInt(24, labourTime);
-            ps.setString(25, checkedBy);
-            ps.setDate(26, Date.valueOf(checkedDate));
-            ps.setString(27, inspectedBy);
-            ps.setDate(28, Date.valueOf(inspectedDate));
-            ps.setString(29, jobStatus);
-            ps.setBoolean(30, approved);
-            ps.setBoolean(31, notApproved);
+            ps.setString(17, currentDate.toString());
+            ps.setString(18, clientID);
+            ps.setDate(19, arrivalDate);
+            ps.setDate(20, returnDate);
+            ps.setString(21, quotedParts);
+            ps.setString(22, motorID);
+            ps.setString(23, manufacturer);
+            if (checkedDateValue != null) {
+            ps.setInt(24, manufactureYear);
+            }
+            else
+            {
+            ps.setNull(24, java.sql.Types.NULL);
+            }
+            ps.setInt(25, labourTime);
+            ps.setString(26, checkedBy);
+            ps.setDate(27, checkedDate);
+            ps.setString(28, inspectedBy);
+            ps.setDate(29, inspectedDate);
+            ps.setString(30, jobStatus);
+            ps.setBoolean(31, approved);
+            ps.setBoolean(32, notApproved);
             if(checkInputErrors()) {
                 ps.executeUpdate();	
                 confirmation("Job Updated Successfully");
@@ -233,6 +290,7 @@ public class JobController implements Initializable {
         } catch (RuntimeException error) {
             confirmation("The Data Was Not Inserted Successfully");
             System.out.println("Interface Error");
+            error.printStackTrace();
             System.out.println(error);
         }
     }
@@ -372,13 +430,20 @@ public class JobController implements Initializable {
                     this.clientID.setDisable(false);
 
                     // Converts arrivalDate value to LocalDate
-                    LocalDate arrivalDate1 = ((java.sql.Date) arrivalDate).toLocalDate();
-                    this.arrivalDate.setValue(arrivalDate1);
+
+                    if (arrivalDate != null) {
+                        LocalDate arrivalDate1 = ((java.sql.Date) arrivalDate).toLocalDate();
+                    	this.arrivalDate.setValue(arrivalDate1);	
+                    }
                     this.arrivalDate.setDisable(false);
 
                     // Converts returnDate value to LocalDate
-                    LocalDate returnDate1 = ((java.sql.Date) returnDate).toLocalDate();
-                    this.returnDate.setValue(returnDate1);
+                    if (returnDate != null)
+                    {
+                        LocalDate returnDate1 = ((java.sql.Date) returnDate).toLocalDate();
+                        this.returnDate.setValue(returnDate1);
+                    }
+
                     this.returnDate.setDisable(false);
 
                     this.quotedParts.setText(quotedParts);
@@ -390,7 +455,13 @@ public class JobController implements Initializable {
                     this.manufacturer.setText(manufacturer);
                     this.manufacturer.setDisable(false);
 
+                    if (manufactureYear != 0) {
                     this.manufactureYear.setText("" + manufactureYear);
+                    }
+                    else {
+                	this.manufactureYear.setText("");
+                    }
+                    	
                     this.manufactureYear.setDisable(false);
 
                     this.labourTime.setText("" + labourTime);
@@ -399,8 +470,10 @@ public class JobController implements Initializable {
                     this.checkedBy.setText(checkedBy);
                     this.checkedBy.setDisable(false);
 
-                    LocalDate checkedDate1 = ((java.sql.Date) checkedDate).toLocalDate();
-                    this.checkedDate.setValue(checkedDate1);
+                    if (checkedDate != null) {
+                        LocalDate checkedDate1 = ((java.sql.Date) checkedDate).toLocalDate();
+                        this.checkedDate.setValue(checkedDate1);
+                    }
                     this.checkedDate.setDisable(false);
 
                     this.jobStatus.setValue(jobStatus);
@@ -409,8 +482,10 @@ public class JobController implements Initializable {
                     this.inspectedBy.setText(inspectedBy);
                     this.inspectedBy.setDisable(false);
 
-                    LocalDate inspectedDate1 = ((java.sql.Date) inspectedDate).toLocalDate();
-                    this.inspectedDate.setValue(inspectedDate1);
+                    if (inspectedDate !=null) {
+                    	LocalDate inspectedDate1 = ((java.sql.Date) inspectedDate).toLocalDate();
+                        this.inspectedDate.setValue(inspectedDate1);
+                    }
                     this.inspectedDate.setDisable(false);
 
                     this.approved.setSelected(approved);
@@ -654,6 +729,47 @@ public class JobController implements Initializable {
         return exists;
     }
     
+    public void completeTask(ActionEvent event) {
+    	System.out.println("Completed");
+    	int jobNumber = Integer.parseInt(this.jobField.getText());
+    	save(event);
+    	ToggleButton completedButton = (ToggleButton) event.getSource();
+    	if (!completedButton.isSelected())
+    	{
+    		return;
+    	}
+    	java.util.Date completedDate = new java.util.Date(System.currentTimeMillis());
+    	String dateString = completedDate.toString();
+    	
+    	TextArea taskName = null;
+    	int i = 0;
+    	for (ToggleButton togglebutton : taskCompletedList) {
+    		if (togglebutton == completedButton) {
+    			taskName = taskNameList[i];
+    		}
+    		else {
+    			i++;
+    		}
+    	}
+    	
+    	 String taskNameString = taskName.getText();
+    	 try {
+    	 ps = Variables.getPreparedStatement();
+
+         String query = "UPDATE tasks SET date_completed = ? WHERE job_number = ? AND task_name = ?;";
+         ps = connection.prepareStatement(query);
+         ps.setString(1, dateString);
+         ps.setInt(2, jobNumber);
+         ps.setString(3, taskNameString);
+
+         ps.executeUpdate();
+    	 }
+         catch(SQLException error) {
+             System.out.println("Error");
+             System.out.println(error);
+         }
+    }
+    
     public void navigate(ActionEvent event) {
         Button source = (Button) event.getSource();
 
@@ -740,7 +856,7 @@ public class JobController implements Initializable {
             String jobNumber = this.jobField.getText();
             
             //Check that the Return Date is after the Arrival Date
-            if (arrivalDate.isAfter(returnDate)) 
+            if (arrivalDate != null && returnDate != null && arrivalDate.isAfter(returnDate)) 
             {
             	confirmation("You Cannot have Return Date before the Arrival Date");
             	return false;
@@ -765,6 +881,7 @@ public class JobController implements Initializable {
     	}
 		return true;
     }
+    
     public void initialiseArrays() {
         taskArrayList = new ArrayList < Task > ();
         taskNameList = new TextArea[] {
@@ -879,6 +996,60 @@ public class JobController implements Initializable {
     	});
     }
     
+    
+    public void setEndDate(ActionEvent event) {
+    	java.util.Date currentDate = new java.util.Date(System.currentTimeMillis());
+    	int jobNumber = Integer.parseInt(jobField.getText());
+    	System.out.println(jobNumber);
+    	
+    	try {
+    		// Creates prepared statement
+            ps = Variables.getPreparedStatement();
+
+            // if job number does not exist then save new, else update current record
+            String query = "UPDATE jobs SET end_date = ? WHERE job_number = ?;";
+            ps = connection.prepareStatement(query);
+            ps.setString(1, currentDate.toString());
+            ps.setInt(2, jobNumber);
+            ps.executeUpdate();
+    	System.out.println("Updated");
+    	
+    }
+    	catch (SQLException exception) {
+    		exception.printStackTrace();
+    	}
+    	
+    	if (this.notApproved.isSelected()) {
+    		try {
+    			int frequency = 0;
+        		// Creates prepared statement
+                ps = Variables.getPreparedStatement();
+                
+                String query = "SELECT frequency FROM inspection_failure WHERE manufacturer = ?;";
+                ps = connection.prepareStatement(query);
+                ps.setString(1, this.manufacturer.getText());
+                ResultSet results = ps.executeQuery();
+                while(results.next()) {
+                	frequency = results.getInt("frequency");
+                	frequency++;
+                }
+                	
+                String query1 = "INSERT INTO inspection_failure(manufacturer, frequency) VALUES (?, ?)"
+                		+ "ON DUPLICATE KEY UPDATE frequency = ?;";
+                ps = connection.prepareStatement(query1);
+                ps.setString(1, this.manufacturer.getText());
+                ps.setInt(2, frequency);
+                ps.setInt(3, frequency);
+                ps.executeUpdate();	
+        }
+        	catch (SQLException exception) {
+        		exception.printStackTrace();
+        	}
+    	}
+    }
+    
+    
+    
     /**
      * Utility function to clear all fields.
      */
@@ -907,7 +1078,7 @@ public class JobController implements Initializable {
         this.checkedDate.setDisable(false);
         this.checkedDate.setValue(null);
         this.jobStatus.setDisable(false);
-        this.jobStatus.setValue(null);
+        this.jobStatus.setValue("Active");
         this.inspectedBy.setDisable(false);
         this.inspectedBy.clear();
         this.inspectedDate.setDisable(false);

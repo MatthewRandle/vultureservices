@@ -36,7 +36,7 @@ public final class SceneController extends Application {
         //Register all available scenes here
         addScreen("userAccount", FXMLLoader.load(getClass().getResource( "/userAccount/UserAccount.fxml" )));
         addScreen("Job", FXMLLoader.load(getClass().getResource( "/jobcard/Job.fxml" )));
-        addScreen("taskAllocation", FXMLLoader.load(getClass().getResource( "/taskAllocation/TaskAllocation.fxml" )));
+        addScreen("taskAllocation", FXMLLoader.load(getClass().getResource( "/taskAllocation/TaskAllocate.fxml" )));
         addScreen("jobDelay", FXMLLoader.load(getClass().getResource( "/jobdelay/JobDelay.fxml" )));
         addScreen("statistics", FXMLLoader.load(getClass().getResource( "/statistics/Statistics.fxml" )));
     }

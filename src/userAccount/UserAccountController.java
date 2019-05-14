@@ -490,6 +490,10 @@ public class UserAccountController implements Initializable {
                 notifications.setDisable(false);
                 notifications.setVisible(true);
             }
+            else {
+                notifications.setDisable(true);
+                notifications.setVisible(false);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -502,7 +506,9 @@ public class UserAccountController implements Initializable {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setResizable(false);
-            stage.show();
+            stage.showAndWait();
+
+            checkNotifications();
         }
         catch(IOException err) {
             err.printStackTrace();

@@ -1,8 +1,7 @@
 package userAccount;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import java.net.URL;
@@ -11,10 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.ComboBoxListCell;
+import javafx.scene.input.MouseEvent;
 import utils.Variables;
 
 public class NotificationsController implements Initializable {
@@ -30,6 +27,20 @@ public class NotificationsController implements Initializable {
 
         notificationsList.setItems(notifications);
         getNotifications();
+        setEventHandlers();
+    }
+
+    public void deleteNotification(String alert) {
+        try {
+            ps = con.prepareStatement("DELETE FROM alerts WHERE alert = ?");
+            ps.setString(1, alert);
+            ps.executeUpdate();
+            notifications = FXCollections.observableArrayList();
+            getNotifications();
+            notificationsList.setItems(notifications);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getNotifications() {
@@ -46,5 +57,16 @@ public class NotificationsController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setEventHandlers() {
+        notificationsList.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getClickCount() == 2 ) {
+                    deleteNotification(notificationsList.getSelectionModel().getSelectedItem().toString());
+                }
+            }
+        });
     }
 }

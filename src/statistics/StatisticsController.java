@@ -2,7 +2,9 @@ package statistics;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.BarChart;
@@ -10,10 +12,15 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import userAccount.UserModalController;
 import utils.SceneController;
 import utils.Variables;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,6 +54,9 @@ public class StatisticsController implements Initializable {
 	public String manufacturer;
     Connection connection;
     PreparedStatement ps;
+
+	@FXML Label username;
+	@FXML Button notifications, editAccount;
     
     @FXML CategoryAxis xAxis;
     @FXML NumberAxis yAxis;
@@ -143,7 +153,7 @@ public class StatisticsController implements Initializable {
     }
         
     
-    public void compareJobDuration() throws ParseException {
+    public void compareJobDuration()  {
     	try {
             connection = Variables.getConnection();
          
@@ -165,177 +175,239 @@ public class StatisticsController implements Initializable {
             }
     	}
         catch(SQLException error) {
-                System.out.println("Error logging user in");
-                System.out.println(error);
-        	}
-    	}
+			System.out.println("Error logging user in");
+			System.out.println(error);
+		}
+	}
             
-        public void compareTaskDuration() throws ParseException {
-        	try {
-        	String query1 = "SELECT date_assigned, date_completed, manufacturer FROM tasks JOIN jobs ON tasks.job_number = jobs.job_number WHERE manufacturer IS NOT NULL;";
-            Statement st1 = connection.createStatement();
-            ResultSet results1 = st1.executeQuery(query1);
-            
-            int index = 0;
-            int total = 0;
-            
-            while (results1.next()) {
-            	String dateAssignedString = results1.getString("date_assigned");
-            	String dateCompletedString = results1.getString("date_completed");
-            	String manufacturer = results1.getString("manufacturer");
-            	
-            	if(dateCompletedString != null && dateAssignedString != null) {
-            		Date dateAssigned = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse(dateAssignedString);
-                	Date dateCompleted = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse(dateCompletedString);
-            		long diffInMillies = Math.abs(dateCompleted.getTime() - dateAssigned.getTime());
-                    long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                    
-                    if(taskDuration.containsKey(manufacturer)) {
-                    	long currentDuration = taskDuration.get(manufacturer);     
-                        currentDuration += diff;                    
-                        
-                        taskDuration.put(manufacturer, currentDuration);
-                    }
-                    else {
-                    	taskDuration.put(manufacturer, diff);
-                    }
-            	}
-            }
-        } catch(SQLException error) {
-            System.out.println("Error logging user in");
-            System.out.println(error);
-        }
-        }
-        
-        public void compareEstimatedTaskDuration() throws ParseException {
-        	try {
-        	String query1 = "SELECT date_assigned, date_due, manufacturer FROM tasks JOIN jobs ON tasks.job_number = jobs.job_number WHERE manufacturer IS NOT NULL;";
-            Statement st1 = connection.createStatement();
-            ResultSet results1 = st1.executeQuery(query1);
-            
-            int index = 0;
-            int total = 0;
-            
-            while (results1.next()) {
-            	String dateAssignedString = results1.getString("date_assigned");
-            	String dateDueString = results1.getString("date_due");
-            	String manufacturer = results1.getString("manufacturer");
-            	
-            	if(dateDueString != null && dateAssignedString != null) {
-            		Date dateAssigned = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse(dateAssignedString);
-                	Date dateDue = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse(dateDueString);
-            		long diffInMillies = Math.abs(dateDue.getTime() - dateAssigned.getTime());
-                    long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                    
-                    if(estTaskDuration.containsKey(manufacturer)) {
-                    	long currentDuration = estTaskDuration.get(manufacturer);     
-                        currentDuration += diff;                    
-                        
-                        estTaskDuration.put(manufacturer, currentDuration);
-                    }
-                    else {
-                    	estTaskDuration.put(manufacturer, diff);
-                    }
-                    
-                	System.out.println("Task Difference: " + diff);
-            	}
-            }
-        } catch(SQLException error) {
-            System.out.println("Error logging user in");
-            System.out.println(error);
-        }
-        }
-        
-        public void unexpectedDelayFrequency() throws ParseException {
-        	try {
-        	String query = "SELECT motor, frequency FROM order_parts;";
-            Statement st = connection.createStatement();
-            ResultSet results = st.executeQuery(query);
-            
-            
-            while (results.next()) {
-            	int frequency = results.getInt("frequency");
-            	String motor = results.getString("motor");
-            	if(motor != null) {
-            		motorList.add(motor);
-                	jobDelay.put(motor, frequency);
-            	}
-            }
-        } catch(SQLException error) {
-            System.out.println("SQL Error");
-            System.out.println(error);
-        }
-        }
-            
-        
-        public void finalInspectionFailure() {
-          	try {
-            	String query = "SELECT manufacturer, frequency FROM inspection_failure;";
-                Statement st = connection.createStatement();
-                ResultSet results = st.executeQuery(query);
-                
-                while (results.next()) {
-                	int frequency = results.getInt("frequency");
-                	String manufacturer = results.getString("manufacturer");
-                	if(manufacturer != null) {
-                		manufacturerInspectionList.add(manufacturer);
-                    	inspectionDelay.put(manufacturer, frequency);
-                	}
-                }
-            } catch(SQLException error) {
-                System.out.println("SQL Error");
-                System.out.println(error);
-            }
-        }
-        
-        public void populateInspectionFailure() {
-        	series6 = new Series<>();
-        	series6.setName("Frequency of Unexpected Delays");
-        	
-			for (Entry<String, Integer> inspectionDelay : inspectionDelay.entrySet()) { 
-				series6.getData().add(new XYChart.Data<>(inspectionDelay.getKey(), inspectionDelay.getValue()));
+	public void compareTaskDuration() throws ParseException {
+		try {
+		String query1 = "SELECT date_assigned, date_completed, manufacturer FROM tasks JOIN jobs ON tasks.job_number = jobs.job_number WHERE manufacturer IS NOT NULL;";
+		Statement st1 = connection.createStatement();
+		ResultSet results1 = st1.executeQuery(query1);
+
+		int index = 0;
+		int total = 0;
+
+		while (results1.next()) {
+			String dateAssignedString = results1.getString("date_assigned");
+			String dateCompletedString = results1.getString("date_completed");
+			String manufacturer = results1.getString("manufacturer");
+
+			if(dateCompletedString != null && dateAssignedString != null) {
+				Date dateAssigned = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse(dateAssignedString);
+				Date dateCompleted = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse(dateCompletedString);
+				long diffInMillies = Math.abs(dateCompleted.getTime() - dateAssigned.getTime());
+				long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+				if(taskDuration.containsKey(manufacturer)) {
+					long currentDuration = taskDuration.get(manufacturer);
+					currentDuration += diff;
+
+					taskDuration.put(manufacturer, currentDuration);
+				}
+				else {
+					taskDuration.put(manufacturer, diff);
+				}
 			}
-        }
-            
+		}
+	} catch(SQLException error) {
+		System.out.println("Error logging user in");
+		System.out.println(error);
+	}
+	}
 
-        public void populateJobDuration() {	
-		 	series1 = new Series<>(); 
-			series1.setName("Job");   
-	
-			for (Entry<String, Long> jobDuration : jobDuration.entrySet()) { 
-				series1.getData().add(new XYChart.Data<>(jobDuration.getKey(), jobDuration.getValue()));
+	public void compareEstimatedTaskDuration() throws ParseException {
+		try {
+		String query1 = "SELECT date_assigned, date_due, manufacturer FROM tasks JOIN jobs ON tasks.job_number = jobs.job_number WHERE manufacturer IS NOT NULL;";
+		Statement st1 = connection.createStatement();
+		ResultSet results1 = st1.executeQuery(query1);
+
+		int index = 0;
+		int total = 0;
+
+		while (results1.next()) {
+			String dateAssignedString = results1.getString("date_assigned");
+			String dateDueString = results1.getString("date_due");
+			String manufacturer = results1.getString("manufacturer");
+
+			if(dateDueString != null && dateAssignedString != null) {
+				Date dateAssigned = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse(dateAssignedString);
+				Date dateDue = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse(dateDueString);
+				long diffInMillies = Math.abs(dateDue.getTime() - dateAssigned.getTime());
+				long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+				if(estTaskDuration.containsKey(manufacturer)) {
+					long currentDuration = estTaskDuration.get(manufacturer);
+					currentDuration += diff;
+
+					estTaskDuration.put(manufacturer, currentDuration);
+				}
+				else {
+					estTaskDuration.put(manufacturer, diff);
+				}
 			}
-        }
-        
-        public void populateTaskDuration() {       
-        	series2 = new Series<>();
-        	series2.setName("Task Duration");
-        	series4 = new Series<>();
-        	series4.setName("Task Duration");
-        	
-        	for (Entry taskDuration : taskDuration.entrySet()) { 
-        		series2.getData().add(new XYChart.Data<>(taskDuration.getKey().toString(), Integer.parseInt(taskDuration.getValue().toString())));
-        		series4.getData().add(new XYChart.Data<>(taskDuration.getKey().toString(), Integer.parseInt(taskDuration.getValue().toString())));
-            }
-        }
-        	
-    	public void populateEstTaskDuration() {
-    		series3 = new Series<>();
-    		series3.setName("Estimated Task Duration");
-    		
-        	for (Entry estTaskDuration : estTaskDuration.entrySet()) { 
-        		series3.getData().add(new XYChart.Data<>(estTaskDuration.getKey().toString(), Integer.parseInt(estTaskDuration.getValue().toString())));
-            } 	
-    	}
-    	
-    	public void populateJobDelay() {
-    		series5 = new Series<>();
-    		series5.setName("Frequency of Unexpected Delays");
-    		
-        	for (Entry<String, Integer> jobDelay : jobDelay.entrySet()) { 
-        		series5.getData().add(new XYChart.Data<>(jobDelay.getKey().toString(), jobDelay.getValue()));
-            } 
-    	}
+		}
+	} catch(SQLException error) {
+		System.out.println("Error logging user in");
+		System.out.println(error);
+	}
+	}
+
+	public void unexpectedDelayFrequency() throws ParseException {
+		try {
+		String query = "SELECT motor, frequency FROM order_parts;";
+		Statement st = connection.createStatement();
+		ResultSet results = st.executeQuery(query);
 
 
+		while (results.next()) {
+			int frequency = results.getInt("frequency");
+			String motor = results.getString("motor");
+			if(motor != null) {
+				motorList.add(motor);
+				jobDelay.put(motor, frequency);
+			}
+		}
+	} catch(SQLException error) {
+		System.out.println("SQL Error");
+		System.out.println(error);
+	}
+	}
+
+
+	public void finalInspectionFailure() {
+		try {
+			String query = "SELECT manufacturer, frequency FROM inspection_failure;";
+			Statement st = connection.createStatement();
+			ResultSet results = st.executeQuery(query);
+
+			while (results.next()) {
+				int frequency = results.getInt("frequency");
+				String manufacturer = results.getString("manufacturer");
+				if(manufacturer != null) {
+					manufacturerInspectionList.add(manufacturer);
+					inspectionDelay.put(manufacturer, frequency);
+				}
+			}
+		} catch(SQLException error) {
+			System.out.println("SQL Error");
+			System.out.println(error);
+		}
+	}
+
+	public void populateInspectionFailure() {
+		series6 = new Series<>();
+		series6.setName("Frequency of Unexpected Delays");
+
+		for (Entry<String, Integer> inspectionDelay : inspectionDelay.entrySet()) {
+			series6.getData().add(new XYChart.Data<>(inspectionDelay.getKey(), inspectionDelay.getValue()));
+		}
+	}
+
+
+	public void populateJobDuration() {
+		series1 = new Series<>();
+		series1.setName("Job");
+
+		for (Entry<String, Long> jobDuration : jobDuration.entrySet()) {
+			series1.getData().add(new XYChart.Data<>(jobDuration.getKey(), jobDuration.getValue()));
+		}
+	}
+
+	public void populateTaskDuration() {
+		series2 = new Series<>();
+		series2.setName("Task Duration");
+		series4 = new Series<>();
+		series4.setName("Task Duration");
+
+		for (Entry taskDuration : taskDuration.entrySet()) {
+			series2.getData().add(new XYChart.Data<>(taskDuration.getKey().toString(), Integer.parseInt(taskDuration.getValue().toString())));
+			series4.getData().add(new XYChart.Data<>(taskDuration.getKey().toString(), Integer.parseInt(taskDuration.getValue().toString())));
+		}
+	}
+
+	public void populateEstTaskDuration() {
+		series3 = new Series<>();
+		series3.setName("Estimated Task Duration");
+
+		for (Entry estTaskDuration : estTaskDuration.entrySet()) {
+			series3.getData().add(new XYChart.Data<>(estTaskDuration.getKey().toString(), Integer.parseInt(estTaskDuration.getValue().toString())));
+		}
+	}
+
+	public void populateJobDelay() {
+		series5 = new Series<>();
+		series5.setName("Frequency of Unexpected Delays");
+
+		for (Entry<String, Integer> jobDelay : jobDelay.entrySet()) {
+			series5.getData().add(new XYChart.Data<>(jobDelay.getKey().toString(), jobDelay.getValue()));
+		}
+	}
+
+	public void editSelf() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/userAccount/UserModal.fxml"));
+			Parent root = loader.load();
+
+			UserModalController userModalController = loader.getController();
+			userModalController.setUsername(Variables.getUserName());
+			userModalController.getUserID();
+			userModalController.getPassword();
+			userModalController.setEditSelfModal();
+			userModalController.getUserID();
+
+			Stage stage = new Stage();
+			stage.setScene(new Scene(root));
+			stage.setResizable(false);
+			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.showAndWait();
+		}
+		catch(IOException err) {
+			err.printStackTrace();
+		}
+	}
+
+	public void checkNotifications() {
+		try {
+			String query = "select * from alerts JOIN user_types ON user_types.id = alerts.user_type WHERE user_types.type = ?;";
+			ps = connection.prepareStatement(query);
+			ps.setString(1, Variables.getUserType());
+			ResultSet results = ps.executeQuery();
+			boolean haveAlerts = results.next();
+
+			if(haveAlerts) {
+				notifications.setDisable(false);
+				notifications.setVisible(true);
+				notifications.setManaged(true);
+			}
+			else {
+				notifications.setDisable(true);
+				notifications.setVisible(false);
+				notifications.setManaged(false);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showNotifications() {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/userAccount/Notifications.fxml"));
+			Parent root = loader.load();
+			Stage stage = new Stage();
+			stage.setScene(new Scene(root));
+			stage.setResizable(false);
+			stage.showAndWait();
+
+			checkNotifications();
+		}
+		catch(IOException err) {
+			err.printStackTrace();
+		}
+	}
+
+	public void logout() {
+		SceneController.activate("login");
+	}
 }

@@ -56,7 +56,12 @@ public class LoginController implements Initializable {
                     SceneController controller = new SceneController();
                     controller.registerScreens();
 
-                    SceneController.activate("userAccount");
+                    if(userType.equals("Finance") || userType.equals("Customer Services")) {
+                        SceneController.activate("statistics");
+                    }
+                    else {
+                        SceneController.activate("userAccount");
+                    }
                 }
             }
         }

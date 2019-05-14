@@ -31,7 +31,7 @@ public class UserAccountController implements Initializable {
     Connection con;
     PreparedStatement ps;
     @FXML Label username;
-    @FXML Button notifications;
+    @FXML Button notifications, editAccount, jobs, taskAllocation, jobDelay;
     @FXML Label totalCompletedJobs, totalActiveJobs, totalCompletedTasks, totalActiveTasks;
 
     @FXML private Pane techGroup, hrGroup, managerGroup;
@@ -65,8 +65,6 @@ public class UserAccountController implements Initializable {
         checkUserType();
         username.setText(Variables.getUserName());
         checkNotifications();
-
-        //addEventListeners();
     }
 
     public void navigate(ActionEvent event) {
@@ -108,6 +106,16 @@ public class UserAccountController implements Initializable {
             addUsersEventListeners();
             hrGroup.setDisable(false);
             hrGroup.setVisible(true);
+        }
+
+        //remove header buttons for these user types
+        if(Variables.getUserType().equals("HR") || Variables.getUserType().equals("Finance") || Variables.getUserType().equals("Customer Services")) {
+            jobs.setDisable(true);
+            jobs.setVisible(false);
+            taskAllocation.setDisable(true);
+            taskAllocation.setVisible(false);
+            jobDelay.setDisable(true);
+            jobDelay.setVisible(false);
         }
     }
 
@@ -470,6 +478,29 @@ public class UserAccountController implements Initializable {
         }
     }
 
+    public void editSelf() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("UserModal.fxml"));
+            Parent root = loader.load();
+
+            UserModalController userModalController = loader.getController();
+            userModalController.setUsername(Variables.getUserName());
+            userModalController.getUserID();
+            userModalController.getPassword();
+            userModalController.setEditSelfModal();
+            userModalController.getUserID();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        }
+        catch(IOException err) {
+            err.printStackTrace();
+        }
+    }
+
     public void orderMoreParts() {
 
     }
@@ -489,10 +520,12 @@ public class UserAccountController implements Initializable {
             if(haveAlerts) {
                 notifications.setDisable(false);
                 notifications.setVisible(true);
+                notifications.setManaged(true);
             }
             else {
                 notifications.setDisable(true);
                 notifications.setVisible(false);
+                notifications.setManaged(false);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -513,5 +546,9 @@ public class UserAccountController implements Initializable {
         catch(IOException err) {
             err.printStackTrace();
         }
+    }
+
+    public void logout() {
+        SceneController.activate("login");
     }
 }

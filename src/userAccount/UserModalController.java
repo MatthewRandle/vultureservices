@@ -2,6 +2,7 @@ package userAccount;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import utils.Variables;
 import javafx.fxml.FXML;
@@ -14,11 +15,12 @@ import java.sql.*;
 import java.util.ResourceBundle;
 
 public class UserModalController implements Initializable {
-    String originalUsername;
+    String originalUsername, originalPassword;
     Integer userID;
-    @FXML TextField userName;
+    @FXML TextField userName, password;
     @FXML ComboBox userRoles;
     @FXML Button deleteUser, cancel;
+    @FXML Label roleLabel;
     Connection con;
     PreparedStatement ps;
     ObservableList<String> types = FXCollections.observableArrayList();
@@ -27,7 +29,6 @@ public class UserModalController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         con = Variables.getConnection();
         ps = Variables.getPreparedStatement();
-
 
         userRoles.setItems(types);
         getUserRoles();
@@ -68,6 +69,22 @@ public class UserModalController implements Initializable {
 
     public void setUserRole(String type) {
         userRoles.getSelectionModel().select(type);
+    }
+
+    public void getPassword() {
+        try {
+            ps = con.prepareStatement("SELECT password from users WHERE id = ?;");
+            ps.setInt(1, userID);
+            ResultSet results = ps.executeQuery();
+
+            while(results.next()) {
+                originalPassword = results.getString("password");
+                password.setText(originalPassword);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void editUser() {
@@ -118,6 +135,16 @@ public class UserModalController implements Initializable {
         cancel.setVisible(true);
     }
 
+    public void setEditSelfModal() {
+        cancel.setDisable(false);
+        cancel.setVisible(true);
+        userRoles.setDisable(true);
+        userRoles.setVisible(false);
+        roleLabel.setText("Password");
+        password.setDisable(false);
+        password.setVisible(true);
+    }
+
     public void close() {
         Stage stage = (Stage) userName.getScene().getWindow();
         stage.close();
@@ -128,8 +155,25 @@ public class UserModalController implements Initializable {
         if(deleteUser.isVisible()) {
             editUser();
         }
+        //if we are editing self
+        else if(password.isVisible()) {
+            editSelf();
+        }
         else {
             newUser();
+        }
+    }
+
+    public void editSelf() {
+        try {
+            ps = con.prepareStatement("UPDATE users SET username = ?, password = ? WHERE id = ?;");
+            ps.setString(1, userName.getText());
+            ps.setString(2, password.getText());
+            ps.setInt(3, userID);
+            ps.executeUpdate();
+            close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

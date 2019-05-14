@@ -8,8 +8,6 @@ import javafx.stage.Stage;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import userAccount.UserAccountController;
-
 public final class SceneController extends Application {
     private static HashMap<String, Pane> screenMap = new HashMap<>();
     private static Scene mainScene;
@@ -39,6 +37,7 @@ public final class SceneController extends Application {
         addScreen("taskAllocation", FXMLLoader.load(getClass().getResource( "/taskAllocation/TaskAllocate.fxml" )));
         addScreen("jobDelay", FXMLLoader.load(getClass().getResource( "/jobdelay/JobDelay.fxml" )));
         addScreen("statistics", FXMLLoader.load(getClass().getResource( "/statistics/Statistics.fxml" )));
+        addScreen("login", FXMLLoader.load(getClass().getResource( "/login/View.fxml" )));
     }
 
     @Override

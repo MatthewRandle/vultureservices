@@ -23,7 +23,6 @@ import utils.SceneController;
 
 public class JobDelayController implements Initializable {
 
-	//variables
 	Connection connection;
 	PreparedStatement ps;
 	
@@ -45,9 +44,8 @@ public class JobDelayController implements Initializable {
 	 */
 	@Override
     public void initialize(URL location, ResourceBundle resources) {
-		//adds the text values to the select box, otherwise it would just be blank.
 		jobStatus.getItems().addAll("Active", "Suspended");
-		taskStatus.getItems().addAll("1", "0");
+		taskStatus.getItems().addAll("true", "false");
 	}
 	
 	/*
@@ -55,25 +53,22 @@ public class JobDelayController implements Initializable {
 	 */
 	   public void loadJob() {
 	        try {
-	        	// gets the text from the job number field and converts it to an integer
 	        	String jobField1 = this.jobField.getText();
 	        	int jobNumber = Integer.parseInt(jobField1);
 
 	            connection = Variables.getConnection();
 	            ps = Variables.getPreparedStatement();
-	            //query which pulls jobs from job table in database
+
 	            String query = "SELECT status FROM jobs WHERE jobs.job_number = ?";
 	            ps = connection.prepareStatement(query);
 	            ps.setInt(1, jobNumber);
 
 	            ResultSet results = ps.executeQuery();
 
-	            //if there is no results, then throw error
 	            if (!results.isBeforeFirst() ) {
 	                System.out.println("ER_JOB_DOES_NOT_EXIST");
 	                sqlConfirmation("The specified job does not exist.");
 	            }
-	            //otherwise set the jobStatus box to the jobStatus stored in the database
 	            else {
 	    			String jobStatus;
 	    			
@@ -100,10 +95,9 @@ public class JobDelayController implements Initializable {
 	    		 	int jobNumber = Integer.parseInt(jobField);	
 	    			String jobStatus = this.jobStatus.getValue(); 
 	    			
-	    		 //connection to database
 	             connection = Variables.getConnection();
 	             ps = Variables.getPreparedStatement();
-	             //update query to update jobs table 
+
 	             String query = "UPDATE jobs SET status = ? WHERE job_number = ?";
 	             ps = connection.prepareStatement(query);
 	             ps.setString(1, jobStatus);
@@ -134,19 +128,15 @@ public class JobDelayController implements Initializable {
 	     */
 	    public void loadTaskStatus() {
 			   try {
-				   //variables
 				   String taskField = this.taskField.getText();
 				   int taskNumber = Integer.parseInt(taskField);
-				   //connection to database 
 				   connection = Variables.getConnection();
 		           ps = Variables.getPreparedStatement();
-		           //query to pull tasks from database
 		           String query = "SELECT suspended FROM tasks WHERE tasks.id = ?";
 		           ps = connection.prepareStatement(query);
 		           ps.setInt(1, taskNumber);
 		           
 		           ResultSet results1 = ps.executeQuery();
-		           //if task does not exist, throw an error. If it does exist, insert suspended field into taskStatus choicebox
 		           if (!results1.isBeforeFirst() ) {
 		                System.out.println("ER_TASK_DOES_NOT_EXIST");
 		                sqlConfirmation("The specified task does not exist.");
@@ -171,16 +161,13 @@ public class JobDelayController implements Initializable {
 	     */
 	    public void saveTaskStatus() {
 	    	 try {
-	    		 //variables
 	    		 String taskField = this.taskField.getText();
 	    		 int taskNumber = Integer.parseInt(taskField);
 	    		 String taskStatus = this.taskStatus.getValue(); 
 	    		 
-	    		 //SQL
 	             connection = Variables.getConnection();
 	             ps = Variables.getPreparedStatement();
 
-	             //update query to update tasks table suspended column if button is clicked
 	             String querySuspended = "UPDATE tasks SET suspended = ? WHERE tasks.id = ?";
 	             ps = connection.prepareStatement(querySuspended);
 	             ps.setString(1, taskStatus);
@@ -206,23 +193,20 @@ public class JobDelayController implements Initializable {
 	     */
 	    public void alertTechnician() {
 	    	try {
-	    		//variables
 	    		String taskCompleted = this.taskCompleted.getText();
 				int taskNumber = Integer.parseInt(taskCompleted);
 				String alert = "Task with ID: " + taskNumber + " is remaining from the previous day.";
-				//connection to database 
+				
 				connection = Variables.getConnection();
 		        ps = Variables.getPreparedStatement();
-		        //query to pull tasks
 		        String query1 = "SELECT tasks.id, completed FROM tasks WHERE tasks.id = ? AND completed = 0";
 		        ps = connection.prepareStatement(query1);
 		        ps.setInt(1, taskNumber);
 		           
 		        ResultSet results = ps.executeQuery();
-		        //if task does not exist, throw error. Else insert into alerts table
 		        if (!results.isBeforeFirst() ) {
 		             System.out.println("ER_TASK_DOES_NOT_EXIST");
-		             sqlConfirmation("The specified task does not exist.");
+		             sqlConfirmation("The specified task does not exist, or is not remaining from the previous day.");
 		        	}
 		        else {
 		        	String alertQuery = "INSERT INTO alerts (alert, user_type) VALUES (?, ?)";
@@ -250,17 +234,15 @@ public class JobDelayController implements Initializable {
 	     */
 	    public void alertManagement() {
 	    	try {
-	    		//variables 
 	    		String taskField1 = this.taskField1.getText();
 	        	int taskNumber1 = Integer.parseInt(taskField1);
 	        	String alert = "Task with ID:  " + taskNumber1 + " has not been completed after 2 working days";
-	        	//current date and time 
 	        	Date date = new Date(System.currentTimeMillis());
 	        	String day = date.toString();
-	        	//connection to database
+
 	    		connection = Variables.getConnection();
 	    		ps = Variables.getPreparedStatement();
-		        //query to pull tasks from database  
+
 	    		String query = "SELECT tasks.id, completed, suspended, date_assigned\r\n" + 
 	   						   "FROM tasks \r\n" + 
 	           				   "WHERE tasks.completed = 0 AND tasks.suspended = 0 AND tasks.id = ? AND date_assigned < ?";	       
@@ -270,7 +252,7 @@ public class JobDelayController implements Initializable {
     			ps.setString(2, day);
     			   			
 	    		ResultSet results2 = ps.executeQuery(); 
-	    		//if task does not exist, throw an error. If not insert into alert table
+
 		        if (!results2.isBeforeFirst() ) {
 		        	System.out.println("ER_TASK_DOES_NOT_EXIST");
 		            sqlConfirmation("This task does not meet the required details to check if overdue.");
@@ -301,24 +283,23 @@ public class JobDelayController implements Initializable {
 	     */
 	    public void alertCustomerServices() {
 	    	try {
-	    		//variables
 	    		String jobField2 = this.jobField2.getText();
 		    	int jobNumber = Integer.parseInt(jobField2);
 		    	String alert = "Job with number: " + jobNumber + " is taking longer than expected or will take longer than expected";
 	    		Date currentDate = new Date(System.currentTimeMillis());
 		    	String day = currentDate.toString();
-		    	//connection to database	
+
 		    	connection = Variables.getConnection();
 	    		ps = Variables.getPreparedStatement();
-	    		//query to pull jobs from database
+
 	    		String getJobs = "SELECT job_number, return_date, approved FROM jobs WHERE job_number = ? AND return_Date < ? AND approved = 0";
-	    		//prepared statement connection
+
 	    		ps = connection.prepareStatement(getJobs);
 	    		ps.setInt(1, jobNumber);
 	    		ps.setString(2, day);
-	    		//executes query
+
 	    		ResultSet results3 = ps.executeQuery();
-	    		//if task number is incorrect, show error. Else insert into alerts table 
+
 	    		if (!results3.isBeforeFirst() ) {
 		        	System.out.println("ER_JOB_DOES_NOT_EXIST");
 		            sqlConfirmation("The job number entered is either incorrect or does not meet the criteria.");
@@ -332,7 +313,6 @@ public class JobDelayController implements Initializable {
 		            sqlConfirmation("Customer services alerted successfully");
 	    		}
 	    	}
-	    	//SQL exceptions for errors
 	    	catch(SQLException error) {
                 sqlConfirmation("Data not inserted. Please fill in the job number field and ensure it is correct.");
            	 	System.out.println("Error Inserting Into Database");
@@ -345,7 +325,11 @@ public class JobDelayController implements Initializable {
        	 	}	
 	    }
 	    	
-	    //method for button to go back to user account page
+	    /*
+	     * method for navigation for 'back' button 
+	     * 
+	     * @param ActionEvent ae - the actionevent passed from the GUI
+	     */
 	    public void navigate(ActionEvent event) {
 	        Button source = (Button) event.getSource();
 

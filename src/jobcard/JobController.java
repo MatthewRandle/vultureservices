@@ -378,9 +378,6 @@ public class JobController implements Initializable
 	 */
 	public void loadJob(int jobNumber) 
 	{
-		//clears the fields on the interface
-		clearFields();
-
 		try {
 			ps = Variables.getPreparedStatement();
 			//get the job with the specified job number
@@ -397,6 +394,8 @@ public class JobController implements Initializable
 				confirmation("The specified job does not exist.");
 				// Otherwise create local variables for each value
 			} else {
+				//clears the fields on the interface
+				clearFields();
 				String clientID, quotedParts, motorID, manufacturer, checkedBy, inspectedBy, jobStatus;
 				Date arrivalDate, returnDate, checkedDate, inspectedDate;
 				int manufactureYear, labourTime;
@@ -767,7 +766,7 @@ public class JobController implements Initializable
 	public void completeTask(ActionEvent event) 
 	{
 		ToggleButton completedButton = (ToggleButton) event.getSource();
-		//if the button has been deselected, then dont mark as completed
+		//if the button has been de-selected, then dont mark as completed
 		if (!completedButton.isSelected()) 
 		{
 			return;
@@ -854,6 +853,14 @@ public class JobController implements Initializable
 	 */
 	public void setInspectedBy() 
 	{
+		for (CheckBox checkbox : checkBoxList) {
+			if (checkbox.isSelected()) {
+				confirmation("You cannot approve a job if a task is suspended");
+				approved.setSelected(false);
+				notApproved.setSelected(false);
+				return;
+			}
+		}
 		String username;
 		username = Variables.getUserName();
 		this.inspectedBy.setText("" + username);
@@ -1046,7 +1053,6 @@ public class JobController implements Initializable
 		java.util.Date currentDate = new java.util.Date(System.currentTimeMillis());
 		//Gets job field and converts to a number
 		int jobNumber = Integer.parseInt(jobField.getText());
-		System.out.println(jobNumber);
 
 		try {
 			// Creates prepared statement

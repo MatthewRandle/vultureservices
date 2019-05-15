@@ -22,25 +22,29 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Region;
 import utils.SceneController;
 
+/**
+ * JobDelayController controls the Job Delay interface, providing database connection
+ * and formats for the interface.
+ * 
+ * @author Ethan Roe - 16006250
+ * @version 1
+ * @date 16/05/2019
+ */
+
 public class JobDelayController implements Initializable {
 
 	Connection connection;
 	PreparedStatement ps;
 	
-	public TextField jobField;
-	public TextField taskField;
-	public TextField taskCompleted;
-	public TextField taskField1;
-	public TextField taskDateField;
-	public TextField jobField2;
-	
-	public ChoiceBox<String> taskStatus;
-	public ChoiceBox<String> jobStatus;
-	
+	public TextField jobField, taskField, taskCompleted, taskField1, taskDateField, jobField2;
+	public ChoiceBox<String> taskStatus, jobStatus;
 	public Label username;
 	
 	/**
-	 * Constructor to initialise `
+	 * Calls methods as soon as the scene has been loaded
+	 * 
+	 * @param location
+	 * @param resources
 	 */
 	@Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -238,7 +242,7 @@ public class JobDelayController implements Initializable {
 	    	try {
 	    		String taskField1 = this.taskField1.getText();
 	        	int taskNumber1 = Integer.parseInt(taskField1);
-	        	String alert = "Task with ID:  " + taskNumber1 + " has not been completed after 2 working days";
+	        	String alert = "Task with ID:  " + taskNumber1 + " has not been completed";
 	        	Date date = new Date(System.currentTimeMillis());
 	        	String day = date.toString();
 

@@ -14,6 +14,12 @@ import javafx.scene.control.TextField;
 import utils.SceneController;
 import utils.Variables;
 
+/**
+ * Handles user logging in.
+ *
+ * @author  Matthew Randle
+ */
+
 public class LoginController implements Initializable {
 
     public TextField username;
@@ -27,6 +33,13 @@ public class LoginController implements Initializable {
 
     }
 
+    /**
+     * Takes the username and password inputted to the text fields and attempts to log user in.
+     * If the username and password are correct the user is sent to the userAccount screen.
+     * If not an error shows.
+     * @throws Exception
+     * @see Exception
+     */
     public void login() throws Exception {
         try {
             String username = this.username.getText();
@@ -75,7 +88,7 @@ public class LoginController implements Initializable {
         }
         catch(SQLException error) {
             System.out.println("Error logging user in");
-            System.out.println(error);
+            error.printStackTrace();
         }
     }
 }

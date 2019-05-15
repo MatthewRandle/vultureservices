@@ -1,13 +1,18 @@
 package login;
-import javafx.scene.Scene;
-import utils.Variables;
-import utils.SceneController;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
+
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import java.net.URL;
-import java.sql.*;
-import java.util.ResourceBundle;
+import utils.SceneController;
+import utils.Variables;
 
 public class LoginController implements Initializable {
 
@@ -15,6 +20,7 @@ public class LoginController implements Initializable {
     public PasswordField password;
     Connection connection;
     PreparedStatement ps;
+    @FXML Label loginError;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -38,6 +44,8 @@ public class LoginController implements Initializable {
 
             if (!results.isBeforeFirst() ) {
                 System.out.println("ER_USER_DOES_NOT_EXIST");
+                loginError.setDisable(false);
+                loginError.setVisible(true);
             }
             else {
                 Integer userID = -1;

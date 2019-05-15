@@ -3,7 +3,7 @@ package utils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import login.LoginController;
+import jobcard.JobController;
 import userAccount.UserAccountController;
 
 public final class Variables {
@@ -13,6 +13,7 @@ public final class Variables {
     private static String username;
     private static String userType;
     private static UserAccountController userAccountController;
+    private static JobController jobController;
 
     public static Integer getUserID() {
         return userID;
@@ -45,4 +46,7 @@ public final class Variables {
 
     public static UserAccountController getUserAccountController() { return userAccountController; }
     public static void setUserAccountController(UserAccountController userAccountController) { Variables.userAccountController = userAccountController; }
+    
+    public static JobController getJobController() { return jobController; }
+    public static void setJobController(JobController jobController) { Variables.jobController = jobController; }
 }

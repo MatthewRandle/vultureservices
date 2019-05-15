@@ -121,8 +121,7 @@ public class JobController implements Initializable
 	 * Creates a new job when the 'new' button is pressed. Clears all of the
 	 * existing values on the interface. Checks in case a job with that ID exists
 	 * 
-	 * @param int
-	 *            the new job number to create
+	 * @param int - the new job number to create
 	 */
 	public void newJob(int jobNumber) 
 	{
@@ -141,8 +140,7 @@ public class JobController implements Initializable
 	 * Saves the values on the job card into a new job, or overwrites the existing
 	 * job.
 	 * 
-	 * @param ActionEvent
-	 *            ae - the actionevent passed from the GUI
+	 * @param ActionEvent ae - the actionevent passed from the GUI
 	 */
 	public void save(ActionEvent ae) 
 	{
@@ -166,14 +164,7 @@ public class JobController implements Initializable
 			clientID = this.clientID.getText();
 			manufacturer = this.manufacturer.getText();
 			manYear = this.manufactureYear.getText();
-			labourTimeValue = this.labourTime.getText();
-			if (!this.labourTime.getText().isEmpty()) {
-				labourTime = Integer.parseInt(labourTimeValue);
-			}
-			else
-			{
-				labourTime = 0;
-			}
+			labourTimeValue = this.labourTime.getText();			
 			checkedBy = this.checkedBy.getText();
 			jobStatus = this.jobStatus.getValue();
 			inspectedBy = this.inspectedBy.getText();
@@ -207,6 +198,15 @@ public class JobController implements Initializable
 				manufactureYear = Integer.parseInt(manYear);
 			} else {
 				manufactureYear = 0;
+			}
+			
+			//if the labour time is empty, set it to 0
+			if (!this.labourTime.getText().isEmpty()) {
+				labourTime = Integer.parseInt(labourTimeValue);
+			}
+			else
+			{
+				labourTime = 0;
 			}
 
 			//If there is no checked date, set it to null
@@ -390,7 +390,7 @@ public class JobController implements Initializable
 			ps.setInt(1, jobNumber);
 			ResultSet results = ps.executeQuery();
 
-			// If there is no job for the specified job number
+			// If there is no job for the specified job number print out an error
 			if (!results.isBeforeFirst()) 
 			{
 				System.out.println("ER_JOB_DOES_NOT_EXIST");
@@ -474,6 +474,10 @@ public class JobController implements Initializable
 						this.manufactureYear.setText("");
 					}
 					
+					/*checks to see if the labour time is 0.
+					 * if it is 0 then it means it was an empty value when
+					 * entered into the database.
+					 */
 					if (labourTime != 0)
 					{
 						this.labourTime.setText("" + labourTime);
@@ -506,8 +510,7 @@ public class JobController implements Initializable
 	/**
 	 * Loads the tasks for a specified job number
 	 * 
-	 * @param jobNumber
-	 *            - the job number to load tasks from
+	 * @param jobNumber - the job number to load tasks from
 	 */
 	public void loadTask(int jobNumber) 
 	{
@@ -571,6 +574,7 @@ public class JobController implements Initializable
 			CheckBox suspended = checkBoxList[i];
 			suspended.setSelected(currentTask.isTaskSuspended());
 
+			//Either disable or enable to row depending on if the task is suspended
 			taskName.setDisable(currentTask.isTaskSuspended());
 			taskNotes.setDisable(currentTask.isTaskSuspended());
 			taskTime.setDisable(currentTask.isTaskSuspended());
@@ -588,8 +592,10 @@ public class JobController implements Initializable
 	{
 		CheckBox checked = (CheckBox) ae.getSource();
 		int position = 0;
+		//search through each checkbox in the array
 		for (CheckBox checkbox : checkBoxList) 
 		{
+			//if the checkbox is the one pressed
 			if (checkbox.equals(checked)) 
 			{
 				TextArea taskName = taskNameList[position];
@@ -598,6 +604,7 @@ public class JobController implements Initializable
 				TextField taskAssigned = taskAssignedList[position];
 				ToggleButton taskComplete = taskCompletedList[position];
 
+				//disable the fields
 				taskName.setDisable(checked.isSelected());
 				taskNotes.setDisable(checked.isSelected());
 				taskTime.setDisable(checked.isSelected());
@@ -700,8 +707,7 @@ public class JobController implements Initializable
 	/**
 	 * Prevent strings being entered into the specified text field
 	 * 
-	 * @param textfield
-	 *            - the specific textfield to modify
+	 * @param textfield - the specific textfield to modify
 	 * 
 	 * @return null - if its a string enter nothing
 	 * 
@@ -720,18 +726,27 @@ public class JobController implements Initializable
 		}));
 	}
 
+	/**
+	 * Utility function to check if a row with the same job number and task name exists
+	 * in the database
+	 * @param jobNumber - the job number
+	 * @param taskName - the task name
+	 * @return - false if it does not exist, true if it does
+	 */
 	public boolean checkRow(int jobNumber, String taskName) 
 	{
 		boolean exists = false;
 		try {
 			ps = Variables.getPreparedStatement();
 
+			//select all tasks where with the specified job number and task name
 			String query = "SELECT * FROM tasks WHERE job_number=? and task_name=?;";
 			ps = connection.prepareStatement(query);
 			ps.setInt(1, jobNumber);
 			ps.setString(2, taskName);
 
 			ResultSet results = ps.executeQuery();
+			//if there is no result then exists is false, otherwise true
 			if (!results.isBeforeFirst()) 
 			{
 				exists = false;
@@ -747,10 +762,11 @@ public class JobController implements Initializable
 
 	/**
 	 * Updates the database when a task has been completed
-	 * @param event
+	 * @param event - the task button
 	 */
 	public void completeTask(ActionEvent event) 
 	{
+		//save the job
 		save(event);
 		ToggleButton completedButton = (ToggleButton) event.getSource();
 		//if the button has been deselected, then dont mark as completed
@@ -804,10 +820,12 @@ public class JobController implements Initializable
 		try {
 			ps = Variables.getPreparedStatement();
 
-			String query = "SELECT * FROM tasks WHERE job_number=?;";
+			//selects all jobs with specified job number
+			String query = "SELECT * FROM jobs WHERE job_number=?;";
 			ps = connection.prepareStatement(query);
 			ps.setInt(1, jobNumber);
 
+			//if there is no value, then it does not exist
 			ResultSet results = ps.executeQuery();
 			if (!results.isBeforeFirst()) 
 			{
@@ -822,6 +840,9 @@ public class JobController implements Initializable
 		return exists;
 	}
 
+	/**
+	 * Set the inspected by fields with the current date and user that inspected
+	 */
 	public void setInspectedBy() 
 	{
 		String username;
@@ -829,7 +850,10 @@ public class JobController implements Initializable
 		this.inspectedBy.setText("" + username);
 		this.inspectedDate.setValue(LocalDate.now());
 	}
-
+	
+	/**
+	 * Set the checked by fields with the current date and the user that checked
+	 */
 	public void setCheckedBy() 
 	{
 		String username;
@@ -838,6 +862,10 @@ public class JobController implements Initializable
 		this.checkedDate.setValue(LocalDate.now());
 	}
 
+	/**
+	 * Clears the inspected or checked by fields
+	 * @param ae - either checked by button or inspected by button
+	 */
 	public void clearField(ActionEvent ae) 
 	{
 		if (ae.getSource() == clearChecked) 
@@ -959,47 +987,55 @@ public class JobController implements Initializable
 	 public void navigate(ActionEvent event) {
 	        MenuItem source = (MenuItem) event.getSource();
 
-	        if(source.getText().equals("Dashboard")) {
+	        if(source.getText().equals("Back")) 
+	        {
 	            SceneController.activate("userAccount");
 	        }
 	    }
 
-	// convert these to 1
+	 /**
+	  * Enter a job number to either load it from the database or create a new one
+	  * @param ae - the button that has been pressed
+	  */
 	public void enterJobNumber(ActionEvent ae) 
 	{
-		TextInputDialog dialog = new TextInputDialog();
-
-		dialog.setTitle("Vulture Services");
-		dialog.setHeaderText("Enter a Job Number:");
-		dialog.setContentText("Job Number:");
-
-		Optional<String> result = dialog.showAndWait();
-		Integer jobNumber = Integer.valueOf(result.get());
-		result.ifPresent(name -> 
-		{
-			newJob(jobNumber);
-		});
+		 MenuItem source = (MenuItem) ae.getSource();
+			TextInputDialog dialog = new TextInputDialog();
+			dialog.setTitle("Vulture Services");
+			dialog.setHeaderText("Enter a Job Number:");
+			dialog.setContentText("Job Number:");  
+		
+			//if the new job button has been pressed, create a new job
+			if(source.getText().equals("New Job")) 
+	        {
+	    		Optional<String> result = dialog.showAndWait();
+	    		Integer jobNumber = Integer.valueOf(result.get());
+	    		result.ifPresent(name -> 
+	    		{
+	    			newJob(jobNumber);
+	    		});
+	        }
+			//if the load job button has been pressed, load the job
+			else if (source.getText().equals("Load Job")) 
+			{
+				Optional<String> result = dialog.showAndWait();
+				Integer jobNumber = Integer.valueOf(result.get());
+				result.ifPresent(name -> 
+				{
+					loadJob(jobNumber);
+				});
+			}		
 	}
 
-	public void loadJobNumber(ActionEvent ae) 
-	{
-		TextInputDialog dialog = new TextInputDialog();
-
-		dialog.setTitle("Vulture Services");
-		dialog.setHeaderText("Enter a Job Number:");
-		dialog.setContentText("Job Number:");
-
-		Optional<String> result = dialog.showAndWait();
-		Integer jobNumber = Integer.valueOf(result.get());
-		result.ifPresent(name -> 
-		{
-			loadJob(jobNumber);
-		});
-	}
-
+	/**
+	 * Sets the end date of the job for the current job number
+	 * @param event - the button pressed
+	 */
 	public void setEndDate(ActionEvent event) 
 	{
+		//Gets current date
 		java.util.Date currentDate = new java.util.Date(System.currentTimeMillis());
+		//Gets job field and converts to a number
 		int jobNumber = Integer.parseInt(jobField.getText());
 		System.out.println(jobNumber);
 
@@ -1007,18 +1043,18 @@ public class JobController implements Initializable
 			// Creates prepared statement
 			ps = Variables.getPreparedStatement();
 
-			// if job number does not exist then save new, else update current record
+			// Update job number's end date
 			String query = "UPDATE jobs SET end_date = ? WHERE job_number = ?;";
 			ps = connection.prepareStatement(query);
 			ps.setString(1, currentDate.toString());
 			ps.setInt(2, jobNumber);
 			ps.executeUpdate();
-			System.out.println("Updated");
 
 		} catch (SQLException exception) {
 			exception.printStackTrace();
 		}
 
+		// if the job is set to not approved
 		if (this.notApproved.isSelected()) 
 		{
 			try {
@@ -1026,6 +1062,7 @@ public class JobController implements Initializable
 				// Creates prepared statement
 				ps = Variables.getPreparedStatement();
 
+				//populate the inspection failure database and increase the frequency of failed manufacturer 
 				String query = "SELECT frequency FROM inspection_failure WHERE manufacturer = ?;";
 				ps = connection.prepareStatement(query);
 				ps.setString(1, this.manufacturer.getText());
@@ -1089,6 +1126,7 @@ public class JobController implements Initializable
 		this.notApproved.setSelected(false);
 		this.taskName1.clear();
 
+		//for each value in the tasks array lists, clear them and enable them
 		for (TextArea textarea : taskNameList) 
 		{
 			textarea.clear();

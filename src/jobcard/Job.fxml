@@ -90,14 +90,14 @@
                 <Menu mnemonicParsing="false" text="File">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#enterJobNumber" text="New Job" />
-                        <MenuItem mnemonicParsing="false" onAction="#loadJobNumber" text="Load Job" />
+                        <MenuItem mnemonicParsing="false" onAction="#enterJobNumber" text="Load Job" />
                         <MenuItem mnemonicParsing="false" onAction="#save" text="Save Job" />
                         <MenuItem mnemonicParsing="false" onAction="#exportJob" text="Export Job" />
                   </items>
                 </Menu>
-                  <Menu mnemonicParsing="false" text="Navigate">
+                  <Menu mnemonicParsing="false" text="Navigation">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#navigate" text="Dashboard" />
+                      <MenuItem mnemonicParsing="false" onAction="#navigate" text="Back" />
                     </items>
                   </Menu>
               </menus>
@@ -112,7 +112,7 @@
                   <Tooltip text="The user who is currently logged in" />
                </tooltip>
             </Label>
-            <Label fx:id="username" layoutX="703.0" layoutY="31.0" prefHeight="21.0" prefWidth="240.0" />
+            <Label fx:id="username" layoutX="709.0" layoutY="31.0" prefHeight="21.0" prefWidth="240.0" />
          </children>
       </Pane>
       <Pane fx:id="bottomPane" prefHeight="459.0" prefWidth="1280.0">

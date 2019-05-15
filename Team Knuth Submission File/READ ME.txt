@@ -1,0 +1,22 @@
+KF5012 Software Engineering Practice - Computer Science Project
+
+Team Knuth
+Members:
+Ryan Pickering - 17013352
+Ethan Roe - 16006250
+Matthew Pritchard - 16037991
+Matthew Randle - 16016867
+
+Missions:
+Mission 1 (Project Management) - Ryan Pickering
+Mission 2 (Requirements Analysis) - Ethan Roe
+Mission 3 (Software Analysis) - Matthew Pritchard
+Mission 4 (Testing) - Matthew Randle
+Mission 5 (Job Progress Component) - Ryan Pickering
+Mission 6 (Data Component) - Group Mission
+Mission 7 (Task Allocation Component) - Matthew Pritchard
+Mission 8 (User Account Component) - Matthew Randle
+Mission 9 (Job Delay Component) - Ethan Roe
+Mission 10 (Statistics Component) - Group Mission
+
+

@@ -4,6 +4,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import utils.Job;
 import utils.User;
+import utils.Part;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -47,6 +48,9 @@ public class UserAccountController implements Initializable {
     @FXML private TableView<User> usersTable;
     @FXML private TableColumn<User, String> usernameCol, roleCol;
 
+    @FXML private TableView<Part> partsTable;
+    @FXML private TableColumn<Part, String> partCol, availableCol;
+
     ObservableList<Task> currentTaskList = FXCollections.observableArrayList();
     ObservableList<Task> suspendedTaskList = FXCollections.observableArrayList();
     ObservableList<Task> overdueTaskList = FXCollections.observableArrayList();
@@ -56,6 +60,7 @@ public class UserAccountController implements Initializable {
     ObservableList<Job> jobsThatNeedPartsList = FXCollections.observableArrayList();
 
     ObservableList<User> userList = FXCollections.observableArrayList();
+    ObservableList<Part> partsList = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -102,8 +107,10 @@ public class UserAccountController implements Initializable {
         else if(Variables.getUserType().equals("HR")) {
             getUsers();
             getJobsThatNeedParts();
+            getParts();
             addPartsEventListeners();
             addUsersEventListeners();
+            addEditPartsEventListeners();
             hrGroup.setDisable(false);
             hrGroup.setVisible(true);
         }
@@ -389,6 +396,65 @@ public class UserAccountController implements Initializable {
         returnDateCol_hr.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
 
         partsNeededTable.setItems(jobsThatNeedPartsList);
+    }
+
+    public void getParts() {
+        try {
+            Statement stmt = con.createStatement();
+            ResultSet results = stmt.executeQuery("select * from parts;");
+
+            while (results.next()) {
+                partsList.add(
+                        new Part(
+                                results.getString("part"),
+                                results.getString("available")
+                        )
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        partCol.setCellValueFactory(new PropertyValueFactory<>("part"));
+        availableCol.setCellValueFactory(new PropertyValueFactory<>("available"));
+
+        partsTable.setItems(partsList);
+    }
+
+    public void addEditPartsEventListeners() {
+        partsTable.setRowFactory(tv -> {
+            TableRow<Part> row = new TableRow<>();
+            row.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    try {
+                        if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                            String currentAvailabilty;
+                            Part rowData = row.getItem();
+
+                            if(rowData.getAvailable().equals("Available")) {
+                                currentAvailabilty = "Not Available";
+                            }
+                            else {
+                                currentAvailabilty = "Available";
+                            }
+
+                            String query = "UPDATE parts SET available = ? WHERE part = ?;";
+                            ps = con.prepareStatement(query);
+                            ps.setString(1, currentAvailabilty);
+                            ps.setString(2, rowData.getPart());
+                            ps.executeUpdate();
+                            partsList = FXCollections.observableArrayList();
+                            getParts();
+                        }
+                    }
+                    catch(SQLException err) {
+                        err.printStackTrace();
+                    }
+                }
+            });
+            return row;
+        });
     }
 
     public void addPartsEventListeners() {

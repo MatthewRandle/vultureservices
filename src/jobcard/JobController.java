@@ -35,8 +35,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import taskAllocation.Task;
 import utils.SceneController;
+import utils.Task;
 import utils.Variables;
 
 /**
@@ -167,7 +167,13 @@ public class JobController implements Initializable
 			manufacturer = this.manufacturer.getText();
 			manYear = this.manufactureYear.getText();
 			labourTimeValue = this.labourTime.getText();
-			labourTime = Integer.parseInt(labourTimeValue);
+			if (!this.labourTime.getText().isEmpty()) {
+				labourTime = Integer.parseInt(labourTimeValue);
+			}
+			else
+			{
+				labourTime = 0;
+			}
 			checkedBy = this.checkedBy.getText();
 			jobStatus = this.jobStatus.getValue();
 			inspectedBy = this.inspectedBy.getText();
@@ -422,7 +428,6 @@ public class JobController implements Initializable
 					this.clientID.setDisable(false);
 					this.returnDate.setDisable(false);
 					this.manufactureYear.setDisable(false);
-					this.labourTime.setText("" + labourTime);
 					this.labourTime.setDisable(false);
 					this.checkedBy.setText(checkedBy);
 					this.checkedBy.setDisable(false);
@@ -469,6 +474,12 @@ public class JobController implements Initializable
 						this.manufactureYear.setText("");
 					}
 					
+					if (labourTime != 0)
+					{
+						this.labourTime.setText("" + labourTime);
+					} else {
+						this.labourTime.setText("");
+					}
 					//convert checked date to LocalDate
 					if (checkedDate != null) {
 						LocalDate checkedDate1 = ((java.sql.Date) checkedDate).toLocalDate();

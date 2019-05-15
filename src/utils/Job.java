@@ -3,7 +3,7 @@ package utils;
 import java.util.Date;
 
 public class Job {
-    private String client, quotedParts;
+    private String client, quotedParts, manufacturer;
     private int jobNumber, labourTime;
     private Date arrivalDate, returnDate;
 
@@ -15,11 +15,12 @@ public class Job {
         this.returnDate = returnDate;
     }
 
-    public Job(String client, int jobNumber, String quotedParts, Date returnDate) {
+    public Job(String client, int jobNumber, String quotedParts, Date returnDate, String manufacturer) {
         this.client = client;
         this.jobNumber = jobNumber;
         this.quotedParts = quotedParts;
         this.returnDate = returnDate;
+        this.manufacturer = manufacturer;
     }
 
     public String getClient() {
@@ -28,6 +29,9 @@ public class Job {
     public void setClient(String client) {
         this.client = client;
     }
+    
+    public String getManufacturer() { return manufacturer; }
+    public void setManufacturer(String manufacturer) { this.manufacturer = manufacturer; }
 
     public String getQuotedParts() { return quotedParts; }
     public void setQuotedParts(String quotedParts) { this.quotedParts = quotedParts; }

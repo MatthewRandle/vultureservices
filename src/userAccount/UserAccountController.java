@@ -1,32 +1,41 @@
 package userAccount;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Modality;
-import utils.Job;
-import utils.User;
-import utils.Part;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.Pane;
-import utils.Variables;
-import utils.Task;
-import utils.SceneController;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import java.io.IOException;
-import java.sql.*;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import utils.Job;
+import utils.Part;
+import utils.SceneController;
+import utils.Task;
+import utils.User;
+import utils.Variables;
 
 public class UserAccountController implements Initializable {
     Connection con;
@@ -41,7 +50,7 @@ public class UserAccountController implements Initializable {
     @FXML private TableColumn<Task, Integer> jobNumberCol, durationCol, urgencyCol, jobNumberCol_suspended, jobNumberCol_overdue, durationCol_overdue, urgencyCol_overdue;
 
     @FXML private TableView<Job> activeJobsTable, overdueJobsTable, partsNeededTable;
-    @FXML private TableColumn<Job, String> clientCol, clientCol_overdue, clientCol_hr, partsNeededCol_hr;
+    @FXML private TableColumn<Job, String> clientCol, clientCol_overdue, clientCol_hr, partsNeededCol_hr, manufacturerCol;
     @FXML private TableColumn<Job, Date> arrivalDateCol, returnDateCol, arrivalDateCol_overdue, returnDateCol_overdue, returnDateCol_hr;
     @FXML private TableColumn<Job, Integer> jobNumberCol_job, labourTimeCol, jobNumberCol_job_overdue, labourTimeCol_overdue, jobNumberCol_hr;
 
@@ -381,7 +390,8 @@ public class UserAccountController implements Initializable {
                                     results.getString("client"),
                                     results.getInt("job_number"),
                                     results.getString("quoted_parts"),
-                                    results.getDate("return_date")
+                                    results.getDate("return_date"),
+                                    results.getString("manufacturer")
                             )
                     );
                 }
@@ -394,7 +404,8 @@ public class UserAccountController implements Initializable {
         clientCol_hr.setCellValueFactory(new PropertyValueFactory<>("client"));
         partsNeededCol_hr.setCellValueFactory(new PropertyValueFactory<>("quotedParts"));
         returnDateCol_hr.setCellValueFactory(new PropertyValueFactory<>("returnDate"));
-
+        manufacturerCol.setCellValueFactory(new PropertyValueFactory<>("manufacturer"));
+        
         partsNeededTable.setItems(jobsThatNeedPartsList);
     }
 
@@ -470,6 +481,33 @@ public class UserAccountController implements Initializable {
                             ps = con.prepareStatement(query);
                             ps.setInt(1, rowData.getJobNumber());
                             ps.executeUpdate();
+                            
+                            int frequency = -1;
+                            
+                            query = "SELECT frequency FROM order_parts WHERE motor = ?;";
+                            ps = con.prepareStatement(query);
+                            ps.setString(1, rowData.getManufacturer());
+                            ResultSet results = ps.executeQuery();
+                            
+                            while(results.next()) {
+                            	frequency = results.getInt("frequency");
+                            }
+                            
+                            //doesn't exist yet
+                            if(frequency == -1) {
+                            	query = "INSERT INTO order_parts (motor, frequency) VALUES (?, 1);";
+                                ps = con.prepareStatement(query);
+                                ps.setString(1, rowData.getManufacturer());
+                                ps.executeUpdate();
+                            }
+                            else {
+                            	query = "UPDATE order_parts SET frequency = ? WHERE motor = ?;";
+                                ps = con.prepareStatement(query);
+                                ps.setInt(1, frequency + 1);
+                                ps.setString(2, rowData.getManufacturer());
+                                ps.executeUpdate();
+                            }                                 
+                            
                             jobsThatNeedPartsList = FXCollections.observableArrayList();
                             getJobsThatNeedParts();
                         }
@@ -565,14 +603,6 @@ public class UserAccountController implements Initializable {
         catch(IOException err) {
             err.printStackTrace();
         }
-    }
-
-    public void orderMoreParts() {
-
-    }
-
-    public void orderNewParts() {
-
     }
 
     public void checkNotifications() {

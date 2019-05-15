@@ -30,6 +30,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import jobcard.JobController;
 import utils.Job;
 import utils.Part;
 import utils.SceneController;
@@ -100,6 +101,7 @@ public class UserAccountController implements Initializable {
             getCurrentTasks();
             getSuspendedTasks();
             getOverdueTasks();
+            addJobEventListeners();
             techGroup.setDisable(false);
             techGroup.setVisible(true);
         }
@@ -462,6 +464,24 @@ public class UserAccountController implements Initializable {
                     catch(SQLException err) {
                         err.printStackTrace();
                     }
+                }
+            });
+            return row;
+        });
+    }
+    
+    public void addJobEventListeners() {
+        currentTaskTable.setRowFactory(tv -> {
+            TableRow<Task> row = new TableRow<>();
+            row.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                        Task rowData = row.getItem();
+                        JobController jobController = Variables.getJobController();
+                        jobController.loadJob(rowData.getJobNumber());
+                        SceneController.activate("Job");
+                    }                   
                 }
             });
             return row;

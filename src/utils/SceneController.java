@@ -1,12 +1,13 @@
 package utils;
+import java.sql.SQLException;
+import java.util.HashMap;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import java.sql.SQLException;
-import java.util.HashMap;
 
 public final class SceneController extends Application {
     private static HashMap<String, Pane> screenMap = new HashMap<>();
@@ -31,9 +32,13 @@ public final class SceneController extends Application {
     }
 
     public void registerScreens() throws Exception {
+    	FXMLLoader jobLoader = new FXMLLoader(getClass().getResource("/jobcard/Job.fxml"));
+    	Pane jobPane = jobLoader.load();
+    	Variables.setJobController(jobLoader.getController());
+    	
         //Register all available scenes here
         addScreen("userAccount", FXMLLoader.load(getClass().getResource( "/userAccount/UserAccount.fxml" )));
-        addScreen("Job", FXMLLoader.load(getClass().getResource( "/jobcard/Job.fxml" )));
+        addScreen("Job", jobPane);
         addScreen("taskAllocation", FXMLLoader.load(getClass().getResource( "/taskAllocation/TaskAllocate.fxml" )));
         addScreen("jobDelay", FXMLLoader.load(getClass().getResource( "/jobdelay/JobDelay.fxml" )));
         addScreen("statistics", FXMLLoader.load(getClass().getResource( "/statistics/Statistics.fxml" )));

@@ -90,8 +90,7 @@
             <Text layoutX="101.0" layoutY="336.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To check if a task is suspended or active, enter a task number and click &quot;Load Task Status&quot;. A status* will appear in the drop down. To change the status click the drop down, change the status and click &quot;Save Task Status&quot;" wrappingWidth="326.13671875" />
             <Label layoutX="681.0" layoutY="185.0" text="entering a task number and clicking the button" />
             <Text layoutX="171.0" layoutY="521.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*True = active, False = Suspended" wrappingWidth="213.0" />
-            <Label fx:id="username" layoutX="1058.0" layoutY="21.0" prefHeight="17.0" prefWidth="104.0" />
-            <Text layoutX="920.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User currently logged in:" />
+            <Label fx:id="username" layoutX="1144.0" layoutY="21.0" prefHeight="17.0" prefWidth="104.0" />
          </children>
       </Pane>
    </children>

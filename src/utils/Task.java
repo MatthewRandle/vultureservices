@@ -16,6 +16,23 @@ public class Task {
     private boolean taskComplete;
     private int taskUrgency;
     private boolean taskSuspended;
+	private String dueDate;
+	private String assignedDate;
+    
+    public Task(String taskName, int jobNumber, String taskNotes, int taskDuration, boolean taskComplete,
+			int taskUrgency, boolean taskSuspended, String assignedTo, String dueDate,String assignedDate) {
+		this.taskName = taskName;
+		this.jobNumber = jobNumber;
+		this.taskNotes = taskNotes;
+		this.taskDuration = taskDuration;
+		this.taskComplete = taskComplete;
+		this.setTaskUrgency(taskUrgency);
+		this.taskSuspended = taskSuspended;
+		this.assignedTo = assignedTo;
+		this.setDueDate(dueDate);
+		this.setAssignedDate(assignedDate);
+		
+	}
 
     public Task(String taskName, int jobNumber, String taskNotes, int taskDuration, boolean taskComplete,
                 int taskUrgency, boolean taskSuspended, String assignedTo) {
@@ -24,7 +41,7 @@ public class Task {
         this.taskNotes = taskNotes;
         this.taskDuration = taskDuration;
         this.taskComplete = taskComplete;
-        this.taskUrgency = taskUrgency;
+        this.setTaskUrgency(taskUrgency);
         this.taskSuspended = taskSuspended;
         this.assignedTo = assignedTo;
 
@@ -160,4 +177,28 @@ public class Task {
     public void setTaskSuspended(boolean taskSuspended) {
         this.taskSuspended = taskSuspended;
     }
+
+	public String getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(String dueDate) {
+		this.dueDate = dueDate;
+	}
+
+	public String getAssignedDate() {
+		return assignedDate;
+	}
+
+	public void setAssignedDate(String assignedDate) {
+		this.assignedDate = assignedDate;
+	}
+
+	public int getTaskUrgency() {
+		return taskUrgency;
+	}
+
+	public void setTaskUrgency(int taskUrgency) {
+		this.taskUrgency = taskUrgency;
+	}
 }

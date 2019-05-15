@@ -66,5 +66,7 @@
       <Label layoutX="1066.0" layoutY="199.0" text="Then  urgency to assign:" />
       <ChoiceBox fx:id="viewTaskText" layoutX="1061.0" layoutY="88.0" prefWidth="150.0" />
       <ChoiceBox fx:id="assignTaskText" layoutX="1061.0" layoutY="224.0" prefWidth="150.0" />
+      <Button fx:id="source" layoutX="53.0" layoutY="30.0" mnemonicParsing="false" onAction="#navigate" text="Back" />
+      <Label fx:id="username" layoutX="1197.0" layoutY="14.0" text="Label" />
    </children>
 </AnchorPane>

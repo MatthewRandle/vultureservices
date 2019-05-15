@@ -10,12 +10,15 @@ import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -23,6 +26,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
 import utils.SceneController;
 import utils.Variables;
+import utils.Task;
 
 /*
  * method to set up the task allocation screen 
@@ -50,6 +54,7 @@ public class TaskController implements Initializable {
     public TextField dueDateText;
     public TextField dateAssignedText;
 
+    public Label username;
     ObservableList<Task> taskList = FXCollections.observableArrayList();
     
     @Override
@@ -59,6 +64,7 @@ public class TaskController implements Initializable {
     	fillTables();
     	fillComboBoxes();
         taskTable.setItems(taskList);
+		username.setText(Variables.getUserName());
     }
     
     /*
@@ -526,12 +532,21 @@ public class TaskController implements Initializable {
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 		alert.show();
 	}
-
-    public void testMethod() {
-    	System.out.println("Test worked");
-    }
     
-    public void setJobScreen() {
+    /*
+     * method for navigation for 'back' button 
+     * 
+     * @param ActionEvent ae - the actionevent passed from the GUI
+     */
+    public void navigate(ActionEvent event) {
+        Button source = (Button) event.getSource();
+
+        if(source.getText().equals("Back")) {
+            SceneController.activate("userAccount");
+        }
+    }
+
+    /*public void setJobScreen() {
     	SceneController.activate("Job");
     }
     
@@ -546,5 +561,7 @@ public class TaskController implements Initializable {
     public void setUserAccountScreen() {
     	SceneController.activate("userAccount");
     }
+    
+   */ 
 	
 }

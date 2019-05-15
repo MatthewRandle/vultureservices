@@ -13,7 +13,7 @@
 
 <VBox fx:id="mainBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jobcard.JobController">
    <children>
-      <Pane fx:id="topPane" prefHeight="373.0" prefWidth="1280.0">
+      <Pane fx:id="topPane" prefHeight="376.0" prefWidth="1280.0">
          <children>
             <Label layoutX="35.0" layoutY="46.0" text="Job Number" />
             <Label layoutX="75.0" layoutY="84.0" text="Client" />
@@ -34,7 +34,7 @@
                </tooltip></TextArea>
             <TextField fx:id="motorID" disable="true" layoutX="950.0" layoutY="41.0" prefHeight="31.0" prefWidth="277.0">
                <tooltip>
-                  <Tooltip fx:id="motorIDTT" text="Enter the serial number of the motor" />
+                  <Tooltip fx:id="motorIDTT" text="Enter the name of the motor" />
                </tooltip></TextField>
             <TextField fx:id="manufacturer" disable="true" layoutX="950.0" layoutY="79.0" prefHeight="31.0" prefWidth="277.0">
                <tooltip>
@@ -48,7 +48,7 @@
                <tooltip>
                   <Tooltip fx:id="labourTimeTT" text="Empty Tooltip" />
                </tooltip></TextField>
-            <Label layoutX="863.0" layoutY="46.0" text="Motor Serial" />
+            <Label layoutX="899.0" layoutY="46.0" text="Motor" />
             <Label layoutX="854.0" layoutY="84.0" text="Manufacturer" />
             <Label layoutX="797.0" layoutY="125.0" text="Est. Manufacture Year" />
             <Label layoutX="768.0" layoutY="164.0" text="Total Labour Time (Hours)" />
@@ -95,11 +95,24 @@
                         <MenuItem mnemonicParsing="false" onAction="#exportJob" text="Export Job" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" onAction="#navigate" onMenuValidation="#navigate" text="Dashboard" />
+                  <Menu mnemonicParsing="false" text="Navigate">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#navigate" text="Dashboard" />
+                    </items>
+                  </Menu>
               </menus>
             </MenuBar>
             <Separator layoutX="55.0" layoutY="306.0" prefHeight="4.0" prefWidth="1180.0" />
-            <Button fx:id="clearChecked" disable="true" layoutX="423.0" layoutY="265.0" mnemonicParsing="false" onAction="#clearField" text="Clear" />
+            <Button fx:id="clearChecked" disable="true" layoutX="423.0" layoutY="265.0" mnemonicParsing="false" onAction="#clearField" text="Clear">
+               <tooltip>
+                  <Tooltip text="Clear the Checked By Field" />
+               </tooltip></Button>
+            <Label layoutX="534.0" layoutY="31.0" text="User Currently Logged in:">
+               <tooltip>
+                  <Tooltip text="The user who is currently logged in" />
+               </tooltip>
+            </Label>
+            <Label fx:id="username" layoutX="703.0" layoutY="31.0" prefHeight="21.0" prefWidth="240.0" />
          </children>
       </Pane>
       <Pane fx:id="bottomPane" prefHeight="459.0" prefWidth="1280.0">
@@ -127,7 +140,7 @@
             <Separator layoutX="50.0" layoutY="340.0" prefHeight="4.0" prefWidth="1180.0" />
             <Label layoutX="84.0" layoutY="368.0" text="Inspected By" />
             <Label layoutX="499.0" layoutY="368.0" text="Inspected Date" />
-            <CheckBox fx:id="approved" disable="true" layoutX="1105.0" layoutY="349.0" mnemonicParsing="false" onAction="#setEndDate" text="Approved">
+            <CheckBox fx:id="approved" disable="true" layoutX="1105.0" layoutY="349.0" mnemonicParsing="false" onAction="#setEndDate" onMouseClicked="#setInspectedBy" text="Approved">
                <tooltip>
                   <Tooltip fx:id="approvedTT" text="Approval of the job" />
                </tooltip>
@@ -151,7 +164,7 @@
                         <TextField fx:id="taskTime1" layoutX="797.0" layoutY="14.0" onKeyReleased="#calculateLabourTime" prefHeight="51.0" prefWidth="143.0" />
                         <TextField fx:id="taskAssigned1" editable="false" layoutX="946.0" layoutY="14.0" prefHeight="51.0" prefWidth="135.0" />
                         <ToggleButton id="complete1" fx:id="taskComplete1" layoutX="1152.0" layoutY="14.0" mnemonicParsing="false" onAction="#completeTask" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" AnchorPane.topAnchor="14.0" />
-                        <ToggleButton id="complete1" fx:id="taskComplete2" layoutX="1152.0" layoutY="73.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
+                        <ToggleButton id="complete1" fx:id="taskComplete2" layoutX="1152.0" layoutY="73.0" mnemonicParsing="false" onAction="#completeTask" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
                         <TextField fx:id="taskAssigned2" editable="false" layoutX="947.0" layoutY="74.0" prefHeight="51.0" prefWidth="134.0" />
                         <TextField fx:id="taskTime2" layoutX="797.0" layoutY="73.0" onKeyReleased="#calculateLabourTime" prefHeight="51.0" prefWidth="143.0" />
                         <TextArea fx:id="taskNotes2" layoutX="202.0" layoutY="73.0" prefHeight="51.0" prefWidth="587.0" />
@@ -160,8 +173,8 @@
                         <TextArea fx:id="taskNotes3" layoutX="202.0" layoutY="131.0" prefHeight="51.0" prefWidth="587.0" />
                         <TextField fx:id="taskTime3" layoutX="797.0" layoutY="131.0" onKeyReleased="#calculateLabourTime" prefHeight="51.0" prefWidth="143.0" />
                         <TextField fx:id="taskAssigned3" editable="false" layoutX="948.0" layoutY="132.0" prefHeight="51.0" prefWidth="132.0" />
-                        <ToggleButton id="complete1" fx:id="taskComplete3" layoutX="1152.0" layoutY="131.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
-                        <ToggleButton id="complete1" fx:id="taskComplete4" layoutX="1152.0" layoutY="188.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
+                        <ToggleButton id="complete1" fx:id="taskComplete3" layoutX="1152.0" layoutY="131.0" mnemonicParsing="false" onAction="#completeTask" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
+                        <ToggleButton id="complete1" fx:id="taskComplete4" layoutX="1152.0" layoutY="188.0" mnemonicParsing="false" onAction="#completeTask" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
                         <TextField fx:id="taskAssigned4" editable="false" layoutX="947.0" layoutY="188.0" prefHeight="51.0" prefWidth="135.0" />
                         <TextField fx:id="taskTime4" layoutX="797.0" layoutY="188.0" onKeyReleased="#calculateLabourTime" prefHeight="51.0" prefWidth="143.0" />
                         <TextArea fx:id="taskNotes4" layoutX="202.0" layoutY="188.0" prefHeight="51.0" prefWidth="587.0" />
@@ -170,7 +183,7 @@
                         <TextArea fx:id="taskNotes5" layoutX="202.0" layoutY="246.0" prefHeight="51.0" prefWidth="587.0" />
                         <TextField fx:id="taskTime5" layoutX="797.0" layoutY="246.0" onKeyReleased="#calculateLabourTime" prefHeight="51.0" prefWidth="143.0" />
                         <TextField fx:id="taskAssigned5" editable="false" layoutX="946.0" layoutY="246.0" prefHeight="51.0" prefWidth="135.0" />
-                        <ToggleButton id="complete1" fx:id="taskComplete5" layoutX="1152.0" layoutY="246.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
+                        <ToggleButton id="complete1" fx:id="taskComplete5" layoutX="1152.0" layoutY="246.0" mnemonicParsing="false" onAction="#completeTask" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
                         <TextArea fx:id="taskName6" layoutX="14.0" layoutY="304.0" prefHeight="51.0" prefWidth="178.0" />
                         <TextArea fx:id="taskNotes6" layoutX="202.0" layoutY="304.0" prefHeight="51.0" prefWidth="587.0" />
                         <TextField fx:id="taskTime6" layoutX="797.0" layoutY="306.0" onKeyReleased="#calculateLabourTime" prefHeight="51.0" prefWidth="143.0" />
@@ -192,10 +205,10 @@
                         <CheckBox fx:id="suspended3" layoutX="1091.0" layoutY="129.0" mnemonicParsing="false" onAction="#suspendTask" prefHeight="56.0" prefWidth="39.0" stylesheets="@JobCss.css" />
                         <CheckBox fx:id="suspended4" layoutX="1091.0" layoutY="188.0" mnemonicParsing="false" onAction="#suspendTask" prefHeight="56.0" prefWidth="39.0" stylesheets="@JobCss.css" />
                         <CheckBox fx:id="suspended5" layoutX="1091.0" layoutY="246.0" mnemonicParsing="false" onAction="#suspendTask" prefHeight="56.0" prefWidth="39.0" stylesheets="@JobCss.css" />
-                        <ToggleButton id="complete1" fx:id="taskComplete6" layoutX="1152.0" layoutY="304.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
-                        <ToggleButton id="complete1" fx:id="taskComplete7" layoutX="1151.0" layoutY="362.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
-                        <ToggleButton id="complete1" fx:id="taskComplete8" layoutX="1152.0" layoutY="423.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
-                        <ToggleButton id="complete1" fx:id="taskComplete9" layoutX="1152.0" layoutY="479.0" mnemonicParsing="false" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
+                        <ToggleButton id="complete1" fx:id="taskComplete6" layoutX="1152.0" layoutY="304.0" mnemonicParsing="false" onAction="#completeTask" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
+                        <ToggleButton id="complete1" fx:id="taskComplete7" layoutX="1151.0" layoutY="362.0" mnemonicParsing="false" onAction="#completeTask" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
+                        <ToggleButton id="complete1" fx:id="taskComplete8" layoutX="1152.0" layoutY="423.0" mnemonicParsing="false" onAction="#completeTask" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
+                        <ToggleButton id="complete1" fx:id="taskComplete9" layoutX="1152.0" layoutY="479.0" mnemonicParsing="false" onAction="#completeTask" prefHeight="51.0" prefWidth="64.0" stylesheets="@JobCss.css" />
                         <CheckBox fx:id="suspended6" layoutX="1092.0" layoutY="303.0" mnemonicParsing="false" onAction="#suspendTask" prefHeight="56.0" prefWidth="39.0" stylesheets="@JobCss.css" />
                         <CheckBox fx:id="suspended7" layoutX="1092.0" layoutY="360.0" mnemonicParsing="false" onAction="#suspendTask" prefHeight="56.0" prefWidth="39.0" stylesheets="@JobCss.css" />
                         <CheckBox fx:id="suspended8" layoutX="1092.0" layoutY="421.0" mnemonicParsing="false" onAction="#suspendTask" prefHeight="56.0" prefWidth="39.0" stylesheets="@JobCss.css" />
@@ -218,12 +231,15 @@
                <tooltip>
                   <Tooltip text="Checked if the task is suspended" />
                </tooltip></Label>
-            <CheckBox fx:id="notApproved" disable="true" layoutX="1105.0" layoutY="378.0" mnemonicParsing="false" onAction="#setEndDate" text="Not Approved">
+            <CheckBox fx:id="notApproved" disable="true" layoutX="1105.0" layoutY="378.0" mnemonicParsing="false" onAction="#setEndDate" onMouseClicked="#setInspectedBy" text="Not Approved">
                <tooltip>
                   <Tooltip fx:id="approvedTT1" text="Approval of the job" />
                </tooltip>
             </CheckBox>
-            <Button fx:id="clearInspected" layoutX="382.0" layoutY="362.0" mnemonicParsing="false" onAction="#clearField" text="Clear" />
+            <Button fx:id="clearInspected" layoutX="382.0" layoutY="362.0" mnemonicParsing="false" onAction="#clearField" text="Clear">
+               <tooltip>
+                  <Tooltip text="Clear the Inspected Field" />
+               </tooltip></Button>
          </children>
       </Pane>
    </children>

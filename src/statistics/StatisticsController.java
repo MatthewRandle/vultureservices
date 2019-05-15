@@ -165,13 +165,21 @@ public class StatisticsController implements Initializable {
             	Date arrivalDate = results.getDate("arrival_date");
             	Date returnDate = results.getDate("return_date");
             	manufacturer = results.getString("manufacturer");
-            	
-            	
-            	if(arrivalDate != null && returnDate != null) {
-            		long diffInMillies = Math.abs(returnDate.getTime() - arrivalDate.getTime());
-                    long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                    jobDuration.put(manufacturer, diff);
-            	}    
+
+				if(arrivalDate != null && returnDate != null) {
+					if(jobDuration.containsKey(manufacturer)) {
+						long currentDiff = jobDuration.get(manufacturer);
+						long diffInMillies = Math.abs(returnDate.getTime() - arrivalDate.getTime());
+						long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+						jobDuration.put(manufacturer, diff + currentDiff);
+					}
+					else {
+						long diffInMillies = Math.abs(returnDate.getTime() - arrivalDate.getTime());
+						long diff = TimeUnit.HOURS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+						System.out.println(manufacturer + ": " + diff);
+						jobDuration.put(manufacturer, diff);
+					}
+				}
             }
     	}
         catch(SQLException error) {
@@ -311,6 +319,7 @@ public class StatisticsController implements Initializable {
 		series1.setName("Job");
 
 		for (Entry<String, Long> jobDuration : jobDuration.entrySet()) {
+			System.out.println(jobDuration.getValue());
 			series1.getData().add(new XYChart.Data<>(jobDuration.getKey(), jobDuration.getValue()));
 		}
 	}

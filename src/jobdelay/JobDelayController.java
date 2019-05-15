@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Region;
@@ -35,17 +36,18 @@ public class JobDelayController implements Initializable {
 	
 	public ChoiceBox<String> taskStatus;
 	public ChoiceBox<String> jobStatus;
-
-
+	
+	public Label username;
 	
 	/**
-	 * Initialise method initialises certain things when u first start the program.
-	 * (Basically a constructor).
+	 * Constructor to initialise `
 	 */
 	@Override
     public void initialize(URL location, ResourceBundle resources) {
 		jobStatus.getItems().addAll("Active", "Suspended");
 		taskStatus.getItems().addAll("true", "false");
+		
+		username.setText(Variables.getUserName());
 	}
 	
 	/*

@@ -11,33 +11,69 @@
    <children>
       <Pane prefHeight="916.0" prefWidth="1207.0">
          <children>
-            <Label layoutX="479.0" layoutY="14.0" prefHeight="97.0" prefWidth="306.0" text="Job Delay " textAlignment="CENTER">
+            <Label layoutX="479.0" layoutY="14.0" prefHeight="97.0" prefWidth="276.0" text="Job Delay" textAlignment="CENTER">
                <font>
                   <Font size="61.0" />
                </font>
             </Label>
-            <Button layoutX="402.0" layoutY="197.0" mnemonicParsing="false" onAction="#loadJob" text="Load Job Status" />
-            <TextField fx:id="jobField" layoutX="171.0" layoutY="197.0" prefHeight="25.0" prefWidth="186.0" />
+            <Button layoutX="402.0" layoutY="197.0" mnemonicParsing="false" onAction="#loadJob" text="Load Job Status">
+               <tooltip>
+                  <Tooltip text="Click to load job status" />
+               </tooltip></Button>
+            <TextField fx:id="jobField" layoutX="171.0" layoutY="197.0" prefHeight="25.0" prefWidth="186.0">
+               <tooltip>
+                  <Tooltip text="Enter job number" />
+               </tooltip></TextField>
             <Label layoutX="67.0" layoutY="201.0" text="Job Number" />
-            <ChoiceBox fx:id="jobStatus" disable="true" layoutX="171.0" layoutY="248.0" prefHeight="31.0" prefWidth="186.0" />
+            <ChoiceBox fx:id="jobStatus" disable="true" layoutX="171.0" layoutY="248.0" prefHeight="31.0" prefWidth="186.0">
+               <tooltip>
+                  <Tooltip text="Current status of job" />
+               </tooltip></ChoiceBox>
             <Label layoutX="67.0" layoutY="253.0" text="Job Status" />
-            <Button layoutX="402.0" layoutY="248.0" mnemonicParsing="false" onAction="#saveStatus" text="Save Job Status" />
+            <Button layoutX="402.0" layoutY="248.0" mnemonicParsing="false" onAction="#saveStatus" text="Save Job Status">
+               <tooltip>
+                  <Tooltip text="Click to save to database" />
+               </tooltip></Button>
             <Label layoutX="67.0" layoutY="415.0" text="Task Number" />
             <Label layoutX="72.0" layoutY="481.0" text="Task Status" />
-            <TextField fx:id="taskField" layoutX="171.0" layoutY="411.0" prefHeight="25.0" prefWidth="186.0" />
-            <ChoiceBox fx:id="taskStatus" layoutX="171.0" layoutY="474.0" prefHeight="31.0" prefWidth="186.0" />
-            <Button layoutX="402.0" layoutY="411.0" mnemonicParsing="false" onAction="#loadTaskStatus" text="Load Task Status" />
-            <Button layoutX="403.0" layoutY="477.0" mnemonicParsing="false" onAction="#saveTaskStatus" text="Save Task Status" />
+            <TextField fx:id="taskField" layoutX="171.0" layoutY="411.0" prefHeight="25.0" prefWidth="186.0">
+               <tooltip>
+                  <Tooltip text="Enter task status" />
+               </tooltip></TextField>
+            <ChoiceBox fx:id="taskStatus" layoutX="171.0" layoutY="474.0" prefHeight="31.0" prefWidth="186.0">
+               <tooltip>
+                  <Tooltip text="Current task status" />
+               </tooltip></ChoiceBox>
+            <Button layoutX="402.0" layoutY="411.0" mnemonicParsing="false" onAction="#loadTaskStatus" text="Load Task Status">
+               <tooltip>
+                  <Tooltip text="Click to load task status" />
+               </tooltip></Button>
+            <Button layoutX="403.0" layoutY="477.0" mnemonicParsing="false" onAction="#saveTaskStatus" text="Save Task Status">
+               <tooltip>
+                  <Tooltip text="Click to save status to database" />
+               </tooltip></Button>
             <Label layoutX="687.0" layoutY="449.0" text="Alert Management by entering task number* to check if it is overdue" />
-            <TextField fx:id="taskField1" layoutX="683.0" layoutY="495.0" prefHeight="25.0" prefWidth="186.0" />
-            <Button layoutX="928.0" layoutY="206.0" mnemonicParsing="false" onAction="#alertTechnician" prefHeight="25.0" prefWidth="141.0" text="Alert Technician" />
-            <Button layoutX="930.0" layoutY="495.0" mnemonicParsing="false" onAction="#alertManagement" prefHeight="25.0" prefWidth="141.0" text="Alert Management" />
+            <TextField fx:id="taskField1" layoutX="683.0" layoutY="495.0" prefHeight="25.0" prefWidth="186.0">
+               <tooltip>
+                  <Tooltip text="Enter task number" />
+               </tooltip></TextField>
+            <Button layoutX="928.0" layoutY="206.0" mnemonicParsing="false" onAction="#alertTechnician" prefHeight="25.0" prefWidth="141.0" text="Alert Technician">
+               <tooltip>
+                  <Tooltip text="Click to alert technician" />
+               </tooltip></Button>
+            <Button layoutX="930.0" layoutY="495.0" mnemonicParsing="false" onAction="#alertManagement" prefHeight="25.0" prefWidth="141.0" text="Alert Management">
+               <tooltip>
+                  <Tooltip text="Click to alert management" />
+               </tooltip></Button>
             <Label layoutX="682.0" layoutY="466.0" text="*Task number must not be completed or suspended" />
             <Label layoutX="596.0" layoutY="210.0" text="Task Number" />
             <Text layoutX="102.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To check if a job is suspended or active, enter a job number and click &quot;Load Job Status&quot;. A status will appear in the drop down. To change the status click the drop down, change the status and click &quot;Save Job Status&quot;" wrappingWidth="326.13671875" />
             <Button layoutX="67.0" layoutY="38.0" mnemonicParsing="false" onAction="#navigate" text="Back" />
             <Text layoutX="599.0" layoutY="370.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Job Number" />
-            <TextField fx:id="taskField2" layoutX="683.0" layoutY="353.0" prefHeight="25.0" prefWidth="186.0" />
+            <TextField fx:id="taskField2" layoutX="683.0" layoutY="353.0" prefHeight="25.0" prefWidth="186.0">
+               <tooltip>
+                  <Tooltip text="Enter job number" />
+               </tooltip></TextField>
             <Button layoutX="930.0" layoutY="353.0" mnemonicParsing="false" onAction="#alertCustomerServices" text="Alert Customer Services">
                <tooltip>
                   <Tooltip text="click to alert " />
@@ -45,11 +81,17 @@
             </Button>
             <Label layoutX="683.0" layoutY="311.0" prefHeight="17.0" prefWidth="389.0" text="Alert customer services to a job taking longer than expected by entering" />
             <Label layoutX="683.0" layoutY="326.0" prefHeight="17.0" prefWidth="213.0" text="the job number and clicking the button" />
-            <TextField fx:id="taskCompleted" layoutX="681.0" layoutY="206.0" prefHeight="25.0" prefWidth="186.0" />
+            <TextField fx:id="taskCompleted" layoutX="681.0" layoutY="206.0" prefHeight="25.0" prefWidth="186.0">
+               <tooltip>
+                  <Tooltip text="Enter task number" />
+               </tooltip></TextField>
             <Text layoutX="594.0" layoutY="512.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Task Number" />
             <Label layoutX="681.0" layoutY="169.0" text="Alert technicians to tasks that are remaining from the previous day by" />
-            <Text layoutX="101.0" layoutY="336.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To check if a task is suspended or active, enter a task number and click &quot;Load Task Status&quot;. A status will appear in the drop down. To change the status click the drop down, change the status and click &quot;Save Task Status&quot;" wrappingWidth="326.13671875" />
+            <Text layoutX="101.0" layoutY="336.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To check if a task is suspended or active, enter a task number and click &quot;Load Task Status&quot;. A status* will appear in the drop down. To change the status click the drop down, change the status and click &quot;Save Task Status&quot;" wrappingWidth="326.13671875" />
             <Label layoutX="681.0" layoutY="185.0" text="entering a task number and clicking the button" />
+            <Text layoutX="171.0" layoutY="521.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*True = active, False = Suspended" wrappingWidth="213.0" />
+            <Label fx:id="username" layoutX="1058.0" layoutY="21.0" prefHeight="17.0" prefWidth="104.0" />
+            <Text layoutX="920.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User currently logged in:" />
          </children>
       </Pane>
    </children>

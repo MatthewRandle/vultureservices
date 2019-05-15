@@ -1,0 +1,15 @@
+.toggle-button {
+    -fx-background-color: red;
+}
+
+.toggle-button:selected {
+    -fx-background-color: green;
+}
+
+.check-box > .box {
+	-fx-padding: 1.5em 1.5em 1em 1em; 
+}
+
+.check-box > .box > .mark {
+    -fx-padding: 0.5em 0.5em 0.5em 0.5em; 
+}

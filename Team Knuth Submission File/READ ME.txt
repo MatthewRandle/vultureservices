@@ -1,6 +1,9 @@
 KF5012 Software Engineering Practice - Computer Science Project
 
-Team Knuth
+		Team Knuth
+
+Executable File Name: VultureServices.jar
+
 Members:
 Ryan Pickering - 17013352
 Ethan Roe - 16006250

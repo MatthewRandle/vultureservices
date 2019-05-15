@@ -38,6 +38,13 @@ import utils.Task;
 import utils.User;
 import utils.Variables;
 
+/**
+ * Acts as the home screen for the application after a user has logged in.
+ * Loads data relevant to the users type.
+ *
+ * @author  Matthew Randle
+ */
+
 public class UserAccountController implements Initializable {
     Connection con;
     PreparedStatement ps;
@@ -72,6 +79,11 @@ public class UserAccountController implements Initializable {
     ObservableList<User> userList = FXCollections.observableArrayList();
     ObservableList<Part> partsList = FXCollections.observableArrayList();
 
+    /**
+     * Setup function for javafx. Gets connection variables and calls some setup functions.
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         con = Variables.getConnection();
@@ -82,6 +94,10 @@ public class UserAccountController implements Initializable {
         checkNotifications();
     }
 
+    /**
+     * Used by toolbar buttons to navigate to different scenes
+     * @param event caused by the button
+     */
     public void navigate(ActionEvent event) {
         Button source = (Button) event.getSource();
 
@@ -96,12 +112,16 @@ public class UserAccountController implements Initializable {
         }
     }
 
+    /**
+     * Checks the user type and calls methods to load data that is relevant to that type.
+     * Also makes the correct elements visible.
+     */
     public void checkUserType() {
         if(Variables.getUserType().equals("Technician")) {
             getCurrentTasks();
             getSuspendedTasks();
             getOverdueTasks();
-            addJobEventListeners();
+            addAllTaskEventListeners();
             techGroup.setDisable(false);
             techGroup.setVisible(true);
         }
@@ -137,6 +157,9 @@ public class UserAccountController implements Initializable {
         }
     }
 
+    /**
+     * Gets all tasks for the user that are suspended and loads them into the table
+     */
     public void getSuspendedTasks() {
         try {
             String query = "select * from tasks JOIN users ON users.username = tasks.username where suspended = 1 AND users.username = ?;";
@@ -168,6 +191,9 @@ public class UserAccountController implements Initializable {
         suspendedTaskTable.setItems(suspendedTaskList);
     }
 
+    /**
+     * Gets the current tasks for the user and loads them into the correct table
+     */
     public void getCurrentTasks() {
         try {
             String query = "select * from tasks JOIN users ON users.username = tasks.username where users.username = ?;";
@@ -200,6 +226,9 @@ public class UserAccountController implements Initializable {
         currentTaskTable.setItems(currentTaskList);
     }
 
+    /**
+     * Gets the overdue tasks for that user and loads them into the table
+     */
     public void getOverdueTasks() {
         try {
             String query = "select * from tasks WHERE username = ?;";
@@ -210,6 +239,7 @@ public class UserAccountController implements Initializable {
             while (results.next()) {
                 String dateDueString = results.getString("date_due");
 
+                //we only need to row if there is a date due string
                 if(dateDueString != null) {
                     //if the date has passed
                     if(new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse(dateDueString).before(new Date())) {
@@ -242,6 +272,9 @@ public class UserAccountController implements Initializable {
         overdueTaskTable.setItems(overdueTaskList);
     }
 
+    /**
+     * Gets all the active jobs and loads into the table
+     */
     public void getActiveJobs() {
         try {
             Statement stmt = con.createStatement();
@@ -271,6 +304,9 @@ public class UserAccountController implements Initializable {
         activeJobsTable.setItems(activeJobList);
     }
 
+    /**
+     * Gets all overdue jobs
+     */
     public void getOverdueJobs() {
         try {
             Statement stmt = con.createStatement();
@@ -305,6 +341,9 @@ public class UserAccountController implements Initializable {
         overdueJobsTable.setItems(overdueJobList);
     }
 
+    /**
+     * Gets a total of all completed jobs and sets a label with the value
+     */
     public void getTotalCompletedJobs() {
         try {
             Statement stmt = con.createStatement();
@@ -318,6 +357,9 @@ public class UserAccountController implements Initializable {
         }
     }
 
+    /**
+     * Gets the total active jobs and sets a label with the value
+     */
     public void getTotalActiveJobs() {
         try {
             Statement stmt = con.createStatement();
@@ -331,6 +373,9 @@ public class UserAccountController implements Initializable {
         }
     }
 
+    /**
+     * Gets the total completed tasks and sets a label with the value
+     */
     public void getTotalCompletedTasks() {
         try {
             Statement stmt = con.createStatement();
@@ -344,6 +389,9 @@ public class UserAccountController implements Initializable {
         }
     }
 
+    /**
+     * Gets the total active tasks and sets a label with the value
+     */
     public void getTotalActiveTasks() {
         try {
             Statement stmt = con.createStatement();
@@ -357,6 +405,9 @@ public class UserAccountController implements Initializable {
         }
     }
 
+    /**
+     * Gets all the users from the database and loads them into users table
+     */
     public void getUsers() {
         try {
             Statement stmt = con.createStatement();
@@ -380,12 +431,16 @@ public class UserAccountController implements Initializable {
         usersTable.setItems(userList);
     }
 
+    /**
+     * Gets all jobs that need parts and loads them into correct table
+     */
     public void getJobsThatNeedParts() {
         try {
             Statement stmt = con.createStatement();
             ResultSet results = stmt.executeQuery("select * from jobs WHERE quoted_parts IS NOT NULL AND status != 'Suspended';");
 
             while (results.next()) {
+                //if the job has quoted parts
                 if(!results.getString("quoted_parts").isEmpty()) {
                     jobsThatNeedPartsList.add(
                             new Job(
@@ -411,6 +466,9 @@ public class UserAccountController implements Initializable {
         partsNeededTable.setItems(jobsThatNeedPartsList);
     }
 
+    /**
+     * Gets all the parts that exist on the system and loads them into parts table
+     */
     public void getParts() {
         try {
             Statement stmt = con.createStatement();
@@ -434,6 +492,10 @@ public class UserAccountController implements Initializable {
         partsTable.setItems(partsList);
     }
 
+    /**
+     * Adds event listeners to all the rows on the parts table.
+     * When a row is double clicked the parts availability is chanegd
+     */
     public void addEditPartsEventListeners() {
         partsTable.setRowFactory(tv -> {
             TableRow<Part> row = new TableRow<>();
@@ -441,20 +503,21 @@ public class UserAccountController implements Initializable {
                 @Override
                 public void handle(MouseEvent event) {
                     try {
+                        //if the row was double clicked
                         if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                            String currentAvailabilty;
+                            String currentAvailability;
                             Part rowData = row.getItem();
 
                             if(rowData.getAvailable().equals("Available")) {
-                                currentAvailabilty = "Not Available";
+                                currentAvailability = "Not Available";
                             }
                             else {
-                                currentAvailabilty = "Available";
+                                currentAvailability = "Available";
                             }
 
                             String query = "UPDATE parts SET available = ? WHERE part = ?;";
                             ps = con.prepareStatement(query);
-                            ps.setString(1, currentAvailabilty);
+                            ps.setString(1, currentAvailability);
                             ps.setString(2, rowData.getPart());
                             ps.executeUpdate();
                             partsList = FXCollections.observableArrayList();
@@ -469,9 +532,23 @@ public class UserAccountController implements Initializable {
             return row;
         });
     }
-    
-    public void addJobEventListeners() {
-        currentTaskTable.setRowFactory(tv -> {
+
+    /**
+     * Calls the function to add event listeners for each task table
+     */
+    public void addAllTaskEventListeners() {
+        addTaskEventListeners(currentTaskTable);
+        addTaskEventListeners(overdueTaskTable);
+        addTaskEventListeners(suspendedTaskTable);
+    }
+
+    /**
+     * Adds event listeners to all rows of a given task table table.
+     * When a row is clicked the job that the row corresponds to is loaded.
+     * @param table
+     */
+    public void addTaskEventListeners(TableView<Task> table) {
+        table.setRowFactory(tv -> {
             TableRow<Task> row = new TableRow<>();
             row.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -481,13 +558,17 @@ public class UserAccountController implements Initializable {
                         JobController jobController = Variables.getJobController();
                         jobController.loadJob(rowData.getJobNumber());
                         SceneController.activate("Job");
-                    }                   
+                    }
                 }
             });
             return row;
         });
     }
 
+    /**
+     * Adds events listeners for all the jobs that need parts table.
+     * When a row is clicked the job is suspended and the order_parts table is updated.
+     */
     public void addPartsEventListeners() {
         partsNeededTable.setRowFactory(tv -> {
             TableRow<Job> row = new TableRow<>();
@@ -541,6 +622,10 @@ public class UserAccountController implements Initializable {
         });
     }
 
+    /**
+     * Adds event listeners to users table.
+     * When a row is clicked the user modal class is loaded and the data for the clicked user is passed.
+     */
     public void addUsersEventListeners() {
         usersTable.setRowFactory(tv -> {
             TableRow<User> row = new TableRow<>();
@@ -579,6 +664,10 @@ public class UserAccountController implements Initializable {
         });
     }
 
+    /**
+     * When the new user button is clicked this function loads up the user modal class
+     * with the correct settings for creating a new user.
+     */
     public void newUser() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("UserModal.fxml"));
@@ -602,6 +691,10 @@ public class UserAccountController implements Initializable {
         }
     }
 
+    /**
+     * When the edit account button is clicked this function loads up the user modal class
+     * with the correct settings for editing your own information (current logged in user)
+     */
     public void editSelf() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("UserModal.fxml"));
@@ -625,6 +718,10 @@ public class UserAccountController implements Initializable {
         }
     }
 
+    /**
+     * Checks if the user that is logged in has any notifications, if they do
+     * the notifications button is made visible
+     */
     public void checkNotifications() {
         try {
             String query = "select * from alerts JOIN user_types ON user_types.id = alerts.user_type WHERE user_types.type = ?;";
@@ -648,6 +745,9 @@ public class UserAccountController implements Initializable {
         }
     }
 
+    /**
+     *If the user that is logged in has any notifications the notifications class is loaded.
+     */
     public void showNotifications() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Notifications.fxml"));
@@ -664,6 +764,9 @@ public class UserAccountController implements Initializable {
         }
     }
 
+    /**
+     * When logout button is clicked this function returns the user to the login page
+     */
     public void logout() {
         SceneController.activate("login");
     }

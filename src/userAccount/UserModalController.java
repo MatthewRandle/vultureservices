@@ -14,6 +14,12 @@ import java.net.URL;
 import java.sql.*;
 import java.util.ResourceBundle;
 
+/**
+ * Loads the users information and allows editing/deletion of users settings.
+ *
+ * @author  Matthew Randle
+ */
+
 public class UserModalController implements Initializable {
     String originalUsername, originalPassword;
     Integer userID;
@@ -25,6 +31,11 @@ public class UserModalController implements Initializable {
     PreparedStatement ps;
     ObservableList<String> types = FXCollections.observableArrayList();
 
+    /**
+     * Gets connection variables and gets the user roles.
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         con = Variables.getConnection();
@@ -34,6 +45,9 @@ public class UserModalController implements Initializable {
         getUserRoles();
     }
 
+    /**
+     * Gets the id for the user that is being edited
+     */
     public void getUserID() {
         try {
             ps = con.prepareStatement("SELECT id from users WHERE username = ?;");
@@ -48,11 +62,18 @@ public class UserModalController implements Initializable {
         }
     }
 
+    /**
+     * Sets the initial value for the username text field.
+     * @param username is the username of the account that is being edited
+     */
     public void setUsername(String username) {
         userName.setText(username);
         originalUsername = username;
     }
 
+    /**
+     * Gets all the user roles from the database and places them into the combo box.
+     */
     public void getUserRoles() {
         try {
             Statement stmt = con.createStatement();
@@ -67,6 +88,10 @@ public class UserModalController implements Initializable {
         }
     }
 
+    /**
+     * Sets the user role for the currently edited user
+     * @param type is the current type of the user
+     */
     public void setUserRole(String type) {
         userRoles.getSelectionModel().select(type);
     }
@@ -87,6 +112,9 @@ public class UserModalController implements Initializable {
         }
     }
 
+    /**
+     * Edits the users information based on the values in the text fields and combo box.
+     */
     public void editUser() {
         try {
             ps = con.prepareStatement("SELECT id from user_types WHERE type = ?;");
@@ -111,6 +139,9 @@ public class UserModalController implements Initializable {
         }
     }
 
+    /**
+     * Delete the user from the database.
+     */
     public void deleteUser() {
         try {
             ps = con.prepareStatement("DELETE FROM users WHERE id = ?;");
@@ -123,18 +154,25 @@ public class UserModalController implements Initializable {
         }
     }
 
-    //shows delete button instead of cancel button (editing a current user)
+    /**
+     * Shows delete button instead of cancel button (editing a current user).
+     */
     public void setEditModal() {
         deleteUser.setDisable(false);
         deleteUser.setVisible(true);
     }
 
-    //shows cancel button instead of delete button (making a new user)
+    /**
+     * Shows cancel button instead of delete button (making a new user).
+     */
     public void setNewModal() {
         cancel.setDisable(false);
         cancel.setVisible(true);
     }
 
+    /**
+     * Shows the correct text fields and buttons when editing your own account.
+     */
     public void setEditSelfModal() {
         cancel.setDisable(false);
         cancel.setVisible(true);
@@ -145,11 +183,19 @@ public class UserModalController implements Initializable {
         password.setVisible(true);
     }
 
+    /**
+     * Closes the user modal window.
+     */
     public void close() {
         Stage stage = (Stage) userName.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * Handles when the save button is clicked as different data will be saved
+     * depending on if you are creating a new user or editing a current one or
+     * editing your own account.
+     */
     public void saveUser() {
         //we are editing a user
         if(deleteUser.isVisible()) {
@@ -164,6 +210,9 @@ public class UserModalController implements Initializable {
         }
     }
 
+    /**
+     * Edits database for the current signed in user.
+     */
     public void editSelf() {
         try {
             ps = con.prepareStatement("UPDATE users SET username = ?, password = ? WHERE id = ?;");
@@ -177,6 +226,9 @@ public class UserModalController implements Initializable {
         }
     }
 
+    /**
+     * Adds a new user to the database.
+     */
     public void newUser() {
         try {
             ps = con.prepareStatement("SELECT id from user_types WHERE type = ?;");

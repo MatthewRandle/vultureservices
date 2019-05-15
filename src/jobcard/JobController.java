@@ -766,15 +766,24 @@ public class JobController implements Initializable
 	 */
 	public void completeTask(ActionEvent event) 
 	{
-		//save the job
-		save(event);
 		ToggleButton completedButton = (ToggleButton) event.getSource();
 		//if the button has been deselected, then dont mark as completed
 		if (!completedButton.isSelected()) 
 		{
 			return;
 		}
-
+		
+		//If the user has not entered a task name then dont allow them to complete a task
+		for (int i = 0; i < taskCompletedList.length; i++) 
+		{
+			if (taskCompletedList[i] == completedButton && taskNameList[i].getText().isEmpty()) 
+			{
+				confirmation("You cannot complete a task without a task name.");
+				completedButton.setSelected(false);
+				return;
+			}
+		}
+			
 		//Get the task name for the row that was completed
 		TextArea taskName = null;
 		int i = 0;

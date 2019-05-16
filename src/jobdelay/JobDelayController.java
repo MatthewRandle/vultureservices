@@ -49,7 +49,7 @@ public class JobDelayController implements Initializable {
 	@Override
     public void initialize(URL location, ResourceBundle resources) {
 		jobStatus.getItems().addAll("Active", "Suspended");
-		taskStatus.getItems().addAll("true", "false");
+		taskStatus.getItems().addAll("1", "0");
 		
 		username.setText(Variables.getUserName());
 	}

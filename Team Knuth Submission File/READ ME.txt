@@ -4,6 +4,28 @@ KF5012 Software Engineering Practice - Computer Science Project
 
 Executable File Name: VultureServices.jar
 
+User Accounts:
+Technician:
+Username: Tech 
+Password: test
+
+Manager:
+Username: Manager
+Password: test
+
+Human Resources:
+Username: hr
+Password: test
+
+Finance
+username: finance
+password: test
+
+Customer Services
+username: cs
+password: test
+
+
 Members:
 Ryan Pickering - 17013352
 Ethan Roe - 16006250

@@ -1,5 +1,21 @@
 package statistics;
 
+import java.io.IOException;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,25 +36,13 @@ import userAccount.UserModalController;
 import utils.SceneController;
 import utils.Variables;
 
-import java.io.IOException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
+/**
+ * Controller to populate the tables of the statistics component
+ * 
+ * @author Ryan Pickering, Matthew Randle
+ * @version 1
+ * @date 16/05/2019
+ */
 
 public class StatisticsController implements Initializable { 
 	
@@ -67,16 +71,20 @@ public class StatisticsController implements Initializable {
     @FXML CategoryAxis xAxis_finalInspectionFailureChart;
     @FXML NumberAxis yAxis_finalInspectionFailureChart;
     
-    
     @FXML BarChart<String, Number> jobTaskDurationChart;
     @FXML BarChart<String, Number> estActualTaskDurationChart;
     @FXML BarChart<String, Number> unexpectedDelayChart;
     @FXML BarChart<String, Number> finalInspectionFailureChart;
 	Series<String, Number> series1, series2, series3, series4, series5, series6;
 	
+    /**
+     * Initialise the scene
+     * @param location - the location for the scene
+     * @resources - the resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-    	jobTaskDurationChart.setTitle("Job Duration vs Est. Task Duration");  
+    	jobTaskDurationChart.setTitle("Actual Job Duration vs Est. Task Duration");  
     	estActualTaskDurationChart.setTitle("Estimated Task Duration vs Actual Task Duration"); 
     	unexpectedDelayChart.setTitle("Frequency of Unexpected Delays due to Ordering Parts");
     	finalInspectionFailureChart.setTitle("Frequency of Unexpected Delays due to Inspection Failure");
@@ -131,6 +139,9 @@ public class StatisticsController implements Initializable {
 
     }
     
+    /**
+     * Get manufacturers
+     */
     public void getManufacturer() {
     	try {
     	connection = Variables.getConnection();
@@ -153,6 +164,9 @@ public class StatisticsController implements Initializable {
     }
         
     
+    /**
+     * Compares the job durations
+     */
     public void compareJobDuration()  {
     	try {
             connection = Variables.getConnection();
@@ -187,7 +201,11 @@ public class StatisticsController implements Initializable {
 			System.out.println(error);
 		}
 	}
-            
+        
+    /**
+     * Compares the task duration with estimated job duration
+     * @throws ParseException
+     */
 	public void compareTaskDuration() throws ParseException {
 		try {
 		String query1 = "SELECT date_assigned, date_completed, manufacturer FROM tasks JOIN jobs ON tasks.job_number = jobs.job_number WHERE manufacturer IS NOT NULL;";
@@ -225,6 +243,10 @@ public class StatisticsController implements Initializable {
 	}
 	}
 
+	/**
+	 * Compares the estimated task duration with actual task duration
+	 * @throws ParseException
+	 */
 	public void compareEstimatedTaskDuration() throws ParseException {
 		try {
 		String query1 = "SELECT date_assigned, date_due, manufacturer FROM tasks JOIN jobs ON tasks.job_number = jobs.job_number WHERE manufacturer IS NOT NULL;";
@@ -262,6 +284,10 @@ public class StatisticsController implements Initializable {
 	}
 	}
 
+	/**
+	 * Displays the frequency of unexpected delays
+	 * @throws ParseException
+	 */
 	public void unexpectedDelayFrequency() throws ParseException {
 		try {
 		String query = "SELECT motor, frequency FROM order_parts;";
@@ -284,6 +310,9 @@ public class StatisticsController implements Initializable {
 	}
 
 
+	/**
+	 * Gets the frequency of final inspections for each manufacturer
+	 */
 	public void finalInspectionFailure() {
 		try {
 			String query = "SELECT manufacturer, frequency FROM inspection_failure;";
@@ -304,6 +333,9 @@ public class StatisticsController implements Initializable {
 		}
 	}
 
+	/**
+	 * populates the inspection failure bar chart
+	 */
 	public void populateInspectionFailure() {
 		series6 = new Series<>();
 		series6.setName("Frequency of Unexpected Delays");
@@ -314,6 +346,9 @@ public class StatisticsController implements Initializable {
 	}
 
 
+	/**
+	 * populates the job duration bar chart
+	 */
 	public void populateJobDuration() {
 		series1 = new Series<>();
 		series1.setName("Job");
@@ -324,6 +359,9 @@ public class StatisticsController implements Initializable {
 		}
 	}
 
+	/**
+	 * populates the task duration chart
+	 */
 	public void populateTaskDuration() {
 		series2 = new Series<>();
 		series2.setName("Task Duration");
@@ -335,7 +373,10 @@ public class StatisticsController implements Initializable {
 			series4.getData().add(new XYChart.Data<>(taskDuration.getKey().toString(), Integer.parseInt(taskDuration.getValue().toString())));
 		}
 	}
-
+	
+	/**
+	 * populates the estimated task duration bar chart
+	 */
 	public void populateEstTaskDuration() {
 		series3 = new Series<>();
 		series3.setName("Estimated Task Duration");
@@ -345,6 +386,9 @@ public class StatisticsController implements Initializable {
 		}
 	}
 
+	/**
+	 * populates the job delay bar chart
+	 */
 	public void populateJobDelay() {
 		series5 = new Series<>();
 		series5.setName("Frequency of Unexpected Delays");
@@ -354,6 +398,9 @@ public class StatisticsController implements Initializable {
 		}
 	}
 
+	/**
+	 * edit user account
+	 */
 	public void editSelf() {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/userAccount/UserModal.fxml"));
@@ -376,7 +423,10 @@ public class StatisticsController implements Initializable {
 			err.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * checks the notifications
+	 */
 	public void checkNotifications() {
 		try {
 			String query = "select * from alerts JOIN user_types ON user_types.id = alerts.user_type WHERE user_types.type = ?;";
@@ -400,6 +450,9 @@ public class StatisticsController implements Initializable {
 		}
 	}
 
+	/**
+	 * display the notifications
+	 */
 	public void showNotifications() {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/userAccount/Notifications.fxml"));
@@ -416,6 +469,9 @@ public class StatisticsController implements Initializable {
 		}
 	}
 
+	/**
+	 * logout of the account
+	 */
 	public void logout() {
 		SceneController.activate("login");
 	}

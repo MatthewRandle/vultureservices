@@ -19,7 +19,7 @@ public class Task {
 	private String dueDate;
 	private String assignedDate;
     
-	/*
+	/**
 	 * constructer for a task within the system 
 	 * @param taskname the name of the task
 	 * @param jobNumber the number of the job the task is within 
@@ -46,7 +46,7 @@ public class Task {
 		this.setAssignedDate(assignedDate);
 		
 	}
-    /*
+    /**
 	 * constructer for a task within the system 
 	 * @param taskname the name of the task
 	 * @param jobNumber the number of the job the task is within 
@@ -70,7 +70,7 @@ public class Task {
         this.assignedTo = assignedTo;
 
     }
-    /*
+    /**
 	 * constructer for a task within the system 
 	 * @param taskname the name of the task
 	 * @param jobNumber the number of the job the task is within 
@@ -89,7 +89,7 @@ public class Task {
         this.taskComplete = taskComplete;
         this.assignedTo = assignedTo;
     }
-    /*
+    /**
 	 * constructer for a task within the system 
 	 * @param taskname the name of the task
 	 * @param jobNumber the number of the job the task is within 
@@ -98,8 +98,6 @@ public class Task {
 	 * @param assignedTo a user name of a technician in which the task is assigned to 
 	 * @param complete if the task is completed 
 	 * @param urgency a number representing how urgent the task is
-
-	  
 	 */
     public Task(String taskName, String taskNotes, int jobNumber, boolean complete, int duration, int urgency, String assignedTo) {
         this.taskName = taskName;
@@ -110,7 +108,7 @@ public class Task {
         this.urgency = urgency;
         this.complete = complete;
     }
-    /*
+    /**
 	 * constructer for a task within the system 
 	 * @param taskname the name of the task
 	 * @param jobNumber the number of the job the task is within 
@@ -126,7 +124,7 @@ public class Task {
         this.duration = duration;
         this.urgency = urgency;
     }
-    /*
+    /**
 	 * constructer for a task within the system 
 	 * @param taskname the name of the task
 	 * @param taskNotes short description of the task 
@@ -141,7 +139,7 @@ public class Task {
         this.assignedTo = assignedTo;
         this.complete = complete;
     }
-    /*
+    /**
  	* get the name of the task 
  	* 
  	* return taskName 
@@ -149,7 +147,7 @@ public class Task {
     public String getTaskName() {
         return taskName;
     }
-    /*
+    /**
  	* set the name of the task 
  	* 
  	* @param taskName the name of the task 
@@ -157,7 +155,7 @@ public class Task {
     public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
-    /*
+    /**
  	* get the job number the task is assigned to
  	* 
  	* return jobNumber  
@@ -165,7 +163,7 @@ public class Task {
     public int getJobNumber() {
         return jobNumber;
     }
-    /*
+    /**
  	* set the job number the task is assigned to
  	* 
  	* @param jobNumber the job number the task is assigned to  
@@ -174,7 +172,7 @@ public class Task {
         this.jobNumber = jobNumber;
     }
 
-    /*
+    /**
  	* get the short description of the task 
  	* 
  	* return description 
@@ -182,7 +180,7 @@ public class Task {
     public String getDescription() {
         return description;
     }
-    /*
+    /**
  	* set the short description of the task 
  	* 
  	* @param description a short description of the task 
@@ -191,7 +189,7 @@ public class Task {
         this.description = description;
     }
 
-    /*
+    /**
  	* get the expected duration
  	* 
  	* return taskDuration
@@ -199,7 +197,7 @@ public class Task {
     public int getDuration() {
         return duration;
     }
-    /*
+    /**
  	* set the expected duration
  	* 
  	* @param taskDuration the expected duration of the task 
@@ -208,7 +206,7 @@ public class Task {
         this.duration = duration;
     }
 
-    /*
+    /**
  	* get the urgency of the task 
  	* 
  	* return urgency
@@ -216,7 +214,7 @@ public class Task {
     public int getUrgency() {
         return urgency;
     }
-    /*
+    /**
  	* set the name of the task 
  	* 
  	* @param urgency the urgency of the task 
@@ -225,7 +223,7 @@ public class Task {
         urgency = urgency;
     }
 
-    /*
+    /**
  	* get true or false if the task is suspended or not 
  	* 
  	* return taskSuspended
@@ -233,7 +231,7 @@ public class Task {
     public int getSuspended() {
         return Suspended;
     }
-    /*
+    /**
  	* set true or false if the task is suspended or not 
  	* 
  	* @param taskSuspended true or false if the task is suspended
@@ -242,7 +240,7 @@ public class Task {
         Suspended = suspended;
     }
 
-    /*
+    /**
  	* get the name of the technician in which the task is assigned to 
  	* 
  	* return username
@@ -250,7 +248,7 @@ public class Task {
     public String getUsername() {
         return Username;
     }
-    /*
+    /**
  	* set the name of the technician in which the task is assigned to 
  	* 
  	* @param username name of the technician being assigned the task  
@@ -259,7 +257,7 @@ public class Task {
         Username = username;
     }
 
-    /*
+    /**
  	* get true or false if the task is complete 
  	* 
  	* return taskComplete
@@ -267,7 +265,7 @@ public class Task {
     public boolean isComplete() {
         return complete;
     }
-    /*
+    /**
  	* set true or false if the task is complete 
  	* 
  	* @param complete true or false if the task is complete 
@@ -276,7 +274,7 @@ public class Task {
         this.complete = complete;
     }
 
-    /*
+    /**
  	* get the name of the technician in which the task is assigned to 
  	* 
  	* return assignedTo  
@@ -284,7 +282,7 @@ public class Task {
     public String getAssignedTo() {
         return assignedTo;
     }
-    /*
+    /**
  	* set the name of the technician in which the task is assigned to 
  	* 
  	* @param assignedTo name of the technician being assigned the task  
@@ -293,7 +291,7 @@ public class Task {
         this.assignedTo = assignedTo;
     }
 
-    /*
+    /**
 	* get the short description of the task 
 	* 
 	* return taskNotes 
@@ -301,7 +299,7 @@ public class Task {
     public String getTaskNotes() {
         return taskNotes;
     }
-/*
+/**
 	* set the short description of the task 
 	* 
 	* @param taskNotes a short description of the task 
@@ -310,7 +308,7 @@ public class Task {
         this.taskNotes = taskNotes;
     }
 
-    /*
+    /**
  	* get the expected duration
  	* 
  	* return taskDuration
@@ -318,7 +316,7 @@ public class Task {
     public int getTaskDuration() {
         return taskDuration;
     }
-    /*
+    /**
  	* set the expected duration
  	* 
  	* @param taskDuration the expected duration of the task 
@@ -327,7 +325,7 @@ public class Task {
         this.taskDuration = taskDuration;
     }
 
-    /*
+    /**
  	* get true or false if the task is complete 
  	* 
  	* return taskComplete
@@ -336,7 +334,7 @@ public class Task {
         return taskComplete;
     }
 
-    /*
+    /**
  	* set true or false if the task is complete 
  	* 
  	* @param taskComplete true or false if the task is complete 
@@ -345,7 +343,7 @@ public class Task {
         this.taskComplete = taskComplete;
     }
 
-    /*
+    /**
  	* get true or false if the task is suspended or not 
  	* 
  	* return taskSuspended
@@ -354,7 +352,7 @@ public class Task {
         return taskSuspended;
     }
 
-    /*
+    /**
  	* set true or false if the task is suspended or not 
  	* 
  	* @param taskSuspended true or false if the task is suspended
@@ -363,7 +361,7 @@ public class Task {
         this.taskSuspended = taskSuspended;
     }
 
-    /*
+    /**
  	* get the exact date and time in which the task is due 
  	* 
  	* return dueDate
@@ -372,7 +370,7 @@ public class Task {
 		return dueDate;
 	}
 
-	/*
+	/**
  	* set the exact date and time in which the task is due 
  	* 
  	* @param dueDate the exact date and time in which the task is due 
@@ -381,7 +379,7 @@ public class Task {
 		this.dueDate = dueDate;
 	}
 
-	/*
+	/**
  	* get the name of the technician in which the task is assigned to 
  	* 
  	* return assignedTo  
@@ -390,7 +388,7 @@ public class Task {
 		return assignedDate;
 	}
 
-	/*
+	/**
  	* set the name of the technician in which the task is assigned to 
  	* 
  	* @param assignedTo name of the technician being assigned the task  
@@ -399,7 +397,7 @@ public class Task {
 		this.assignedDate = assignedDate;
 	}
 
-	/*
+	/**
  	* get the urgency of the task 
  	* 
  	* return taskUrgency
@@ -408,7 +406,7 @@ public class Task {
 		return taskUrgency;
 	}
 
-	/*
+	/**
  	* set the name of the task 
  	* 
  	* @param taskUrgency the urgency of the task 
